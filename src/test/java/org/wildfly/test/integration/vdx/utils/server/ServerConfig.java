@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
 
     @Deprecated Class xmlTransformationClass() default DoNothing.class;
 
-    String xmlTransformationGroovy() default "fooBar.groovy";
+    String xmlTransformationGroovy() default "";
 
     //for things like subtree("webservices", Subtree.subsystemInProfile("profileXY", "webservices")).build());
 

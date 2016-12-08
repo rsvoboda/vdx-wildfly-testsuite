@@ -18,16 +18,21 @@
 package org.wildfly.test.integration.vdx.standalone;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 import static org.junit.Assert.assertTrue;
 
 /**
+ *
  * Created by rsvoboda on 11/30/16.
  */
 
-@RunAsClient public class JBossWSTestCase extends StandaloneTestBase {
+@RunAsClient
+@RunWith(Arquillian.class)
+public class JBossWSTestCase extends StandaloneTestBase {
 
     /*
      * <modify-wsdl-address /> instead of <modify-wsdl-address>true</modify-wsdl-address>

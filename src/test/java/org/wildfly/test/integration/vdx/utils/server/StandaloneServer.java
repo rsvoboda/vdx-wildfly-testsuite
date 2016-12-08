@@ -71,7 +71,7 @@ public class StandaloneServer extends AbstractServer {
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (!FileUtils.isPathExists(Paths.get(PATH_TO_STANDALONE_DIRECTORY.toString(), getServerConfig().configuration()))) {
+        if (!FileUtils.isPathExists(Paths.get(PATH_TO_STANDALONE_DIRECTORY, getServerConfig().configuration()))) {
             new FileUtils().copyFileFromResourcesToServer(STANDALONE_RESOURCES_DIRECTORY + getServerConfig().configuration(), PATH_TO_STANDALONE_DIRECTORY, false);
         }
     }

@@ -27,13 +27,11 @@ import java.util.Scanner;
 public class FileUtils {
 
     public void copyFileFromResourcesToServer(String resourceFile, String targetDirectory, boolean override) throws Exception {
-        System.out.println("COPY - " + resourceFile + " to " + targetDirectory);
         if (resourceFile == null || "".equals(resourceFile)) {
             return;
         }
 
         Path sourcePath = getResourceFile(resourceFile);
-        System.out.println("COPY - sourcePath " + sourcePath );
         if (sourcePath == null) {
             throw new Exception("Resource file " + resourceFile + " does not exist.");
         }
@@ -51,7 +49,7 @@ public class FileUtils {
      * Copies file to directory. Overrides if the same file already exists in target directory.
      * @param file file to copy
      * @param directory target directory
-     * @throws Exception
+     * @throws Exception when copy fails
      */
     public void copyFileToDirectory(Path file, Path directory) throws Exception {
         Files.copy(file, directory.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
@@ -70,16 +68,14 @@ public class FileUtils {
     public static String readFile(String path) throws IOException {
         File file = new File(path);
         StringBuilder fileContents = new StringBuilder((int)file.length());
-        Scanner scanner = new Scanner(file);
-        String lineSeparator = System.getProperty("line.separator");
+        final String lineSeparator = System.getProperty("line.separator");
 
-        try {
+        try (Scanner scanner = new Scanner(file)) {
             while(scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine() + lineSeparator);
+                fileContents.append(scanner.nextLine());
+                fileContents.append(lineSeparator);
             }
             return fileContents.toString();
-        } finally {
-            scanner.close();
         }
     }
 

@@ -18,16 +18,12 @@
 package org.wildfly.test.integration.vdx;
 
 import org.jboss.arquillian.container.test.api.ContainerController;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 import org.wildfly.test.integration.vdx.standalone.StandaloneTestBase;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
 import org.wildfly.test.integration.vdx.utils.server.Server;
@@ -44,17 +40,14 @@ import java.util.regex.Pattern;
  *
  * @see StandaloneTestBase and for domain tests inherit from @see DomainTestBase.
  */
-@RunWith(Arquillian.class)
 public class TestBase {
 
     public static final String STANDALONE_ARQUILLIAN_CONTAINER = "jboss";
     public static final String DOMAIN_ARQUILLIAN_CONTAINER = "jboss-domain";
 
-    @ArquillianResource
-    private ContainerController controller;
+    @ArquillianResource private ContainerController controller;
 
-    @Rule
-    public TestName testName = new TestName();
+    @Rule public TestName testName = new TestName();
 
     private Path testDirectory;
 
@@ -84,33 +77,31 @@ public class TestBase {
     protected void assertExpectedError(String regex, String errorMessage) {
         Pattern expectedError = Pattern.compile(regex, Pattern.DOTALL);
         Matcher matcher = expectedError.matcher(errorMessage);
-        Assert.assertTrue("Error log message does not match the pattern. Failing the test. \n" +
-                "########################## Pattern ##############################\n" +
-                expectedError.toString() + " \n" +
-                "########################## Error log ##############################\n" +
-                errorMessage + " \n" +
-                "########################################################\n" +
-                "########################################################\n", matcher.matches());
+        Assert.assertTrue("Error log message does not match the pattern. Failing the test. \n"
+                + "########################## Pattern ##############################\n" + expectedError.toString() + " \n"
+                + "########################## Error log ##############################\n" + errorMessage + " \n"
+                + "########################################################\n"
+                + "########################################################\n", matcher.matches());
     }
 
-    @Before
-    public void setUp() {
-        System.out.println("----------------------------------------- Start " + this.getClass().getSimpleName()
-                + " - " + testName.getMethodName() + " -----------------------------------------");
+    @Before public void setUp() {
+        System.out.println(
+                "----------------------------------------- Start " + this.getClass().getSimpleName() + " - " + testName
+                        .getMethodName() + " -----------------------------------------");
         testDirectory = Paths.get("target", "server-logs", this.getClass().getSimpleName(), testName.getMethodName());
     }
 
-    @After
-    public void archiveServerLog() throws Exception {
-        System.out.println("----------------------------------------- Stop " + this.getClass().getSimpleName()
-                + " - " + testName.getMethodName() + " -----------------------------------------");
+    @After public void archiveServerLog() throws Exception {
+        System.out.println(
+                "----------------------------------------- Stop " + this.getClass().getSimpleName() + " - " + testName
+                        .getMethodName() + " -----------------------------------------");
         archiveServerLogAndDeleteIt(testDirectory);
     }
 
-    protected void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {
+    private void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {
 
         // if no log then return
-        if (!container().getServerLog().toFile().exists())   {
+        if (!container().getServerLog().toFile().exists()) {
             return;
         }
 
@@ -122,11 +113,5 @@ public class TestBase {
         // copy server.log files for standalone or host-controller.log for domain
         new FileUtils().copyFileToDirectory(container().getServerLog(), archiveDirectory.toPath());
         container().getServerLog().toFile().delete();
-    }
-
-    @Test
-    @RunAsClient
-    public void mockTest() {
-        // ignore me, this is to prevent "java.lang.Exception: No runnable methods" thrown from junit
     }
 }

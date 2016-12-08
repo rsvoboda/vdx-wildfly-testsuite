@@ -25,15 +25,13 @@ import org.wildfly.extras.creaper.core.offline.OfflineManagementClient;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public abstract class AbstractServer implements Server {
 
-    protected ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
-    ;
+    private ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
 
     @Override
     public void tryStartAndWaitForFail() throws Exception {
@@ -50,7 +48,7 @@ public abstract class AbstractServer implements Server {
         // backup config
         backupConfiguration();
 
-        // modify config - only valid configuration files can be crippled
+        // modify config - only valid configuration files can be damaged
         applyXmlTransformation();
 
         try {
@@ -58,7 +56,7 @@ public abstract class AbstractServer implements Server {
             startServer();
 
             // fail the test if server starts
-            Assert.fail("Server started succesfully - probably xml was not invalidated/crippled correctly.");
+            Assert.fail("Server started succesfully - probably xml was not invalidated/damaged correctly.");
 
         } catch (Exception ex) {
             System.out.println("Start of the server failed. This is expected.");
@@ -82,13 +80,13 @@ public abstract class AbstractServer implements Server {
      * <p>
      * This never overrides existing files.
      *
-     * @throws IOException
+     * @throws Exception when copy operation
      */
     protected abstract void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception;
 
     protected abstract void startServer() throws Exception;
 
-    protected void restoreConfigIfBackupExists() throws Exception {
+    private void restoreConfigIfBackupExists() throws Exception {
         if (configurationFileBackup == null) {
             throw new Exception("Backup config is null. This can happen if this method is called before " +
                     "startServer() call. Check tryStartAndWaitForFail() sequence that backupConfiguration() was called.");
@@ -99,7 +97,7 @@ public abstract class AbstractServer implements Server {
 
     protected abstract OfflineManagementClient getOfflineManangementClient() throws Exception;
 
-    protected void backupConfiguration() throws Exception {
+    private void backupConfiguration() throws Exception {
         // todo creaper most likely does not backup/restore host.xml - double check this
         // destroy any existing backup config
         getOfflineManangementClient().apply(configurationFileBackup.destroy());
@@ -110,12 +108,12 @@ public abstract class AbstractServer implements Server {
     /**
      * Copies logging.properties which will log ERROR messages to target/errors.log file
      *
-     * @throws Exception
+     * @throws Exception when copy fails
      */
     protected abstract void copyLoggingPropertiesToConfiguration() throws Exception;
 
     /**
-     * Cripples xml config file only if config file had valid syntax. It cannot cripple invalid xml file.
+     * Damages xml config file only if config file had valid syntax. It cannot damaged invalid xml file.
      * <p>
      * IT THROWS EXCEPTION IF CONFIG FILE IS NOT XML VALID.
      *

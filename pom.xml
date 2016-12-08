@@ -1,4 +1,3 @@
-<!-- todo use dependency management and plugin management from parent pom for versions -->
 <!--
      Copyright 2016 Red Hat, Inc, and individual contributors.
     
@@ -33,25 +32,15 @@
     <name>WildFly Test Suite: Integration - VDX</name>
 
     <properties>
-        <jboss.home>IF-NOT-DEFINED-WILDFLY-WILL-BE-DOWNLOADED-UNZIPPED-AND-USED-AUTOMATICALLY</jboss.home>
         <domain>false</domain> <!-- if tests for domain are executed, set this to true by -Ddomain=true -->
-
-        <version.org.projectodd.vdx>1.1.1</version.org.projectodd.vdx>
-        <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
-
-        <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
-        <version.org.jboss.wildfly.dist>10.1.0.Final</version.org.jboss.wildfly.dist>
-        <version.org.apache.maven.plugins.maven-antrun-plugin>1.8</version.org.apache.maven.plugins.maven-antrun-plugin>
-
-        <version.org.apache.maven.plugins.maven-surefire-plugin>2.19.1
-        </version.org.apache.maven.plugins.maven-surefire-plugin>
-        <version.org.wildfly.arquillian.wildfly-arquillian-everything>1.0.2.Final
-        </version.org.wildfly.arquillian.wildfly-arquillian-everything>
-        <version.org.apache.maven.plugins.maven-dependency-plugin>2.10
-        </version.org.apache.maven.plugins.maven-dependency-plugin>
-        <version.org.wildfly.extras.creaper>1.2.0</version.org.wildfly.extras.creaper>
-        <arquillian.launch>jboss</arquillian.launch>
+        <jboss.home>IF-NOT-DEFINED-WILDFLY-WILL-BE-DOWNLOADED-UNZIPPED-AND-USED-AUTOMATICALLY</jboss.home>
         <version.junit>4.12</version.junit>
+        <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
+        <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
+        <version.org.jboss.wildfly.dist>10.1.0.Final</version.org.jboss.wildfly.dist>
+        <version.org.projectodd.vdx>1.1.1</version.org.projectodd.vdx>
+        <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
+        <version.org.wildfly.extras.creaper>1.2.0</version.org.wildfly.extras.creaper>
     </properties>
 
     <dependencies>
@@ -92,12 +81,12 @@
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-managed</artifactId>
-            <version>${version.org.wildfly.arquillian.wildfly-arquillian-everything}</version>
+            <version>${version.org.wildfly.arquillian}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly.arquillian</groupId>
             <artifactId>wildfly-arquillian-container-domain-managed</artifactId>
-            <version>${version.org.wildfly.arquillian.wildfly-arquillian-everything}</version>
+            <version>${version.org.wildfly.arquillian}</version>
         </dependency>
         <dependency>
             <groupId>org.wildfly</groupId>
@@ -111,9 +100,7 @@
         <profile>
             <id>download-wildfly</id>
             <activation>
-                <property>
-                    <name>!jboss.home</name>
-                </property>
+                <property><name>!jboss.home</name></property>
             </activation>
             <properties>
                 <jboss.home>${basedir}/target/jboss-as</jboss.home>
@@ -123,14 +110,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
-                        <version>${version.org.apache.maven.plugins.maven-dependency-plugin}</version>
                         <executions>
                             <execution>
                                 <id>unpack-jboss-as</id>
                                 <phase>generate-test-resources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
+                                <goals><goal>unpack</goal></goals>
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
@@ -149,14 +133,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>${version.org.apache.maven.plugins.maven-antrun-plugin}</version>
                         <executions>
                             <execution>
                                 <id>rename-unpacked-jboss-as</id>
                                 <phase>process-test-resources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
+                                <goals><goal>run</goal></goals>
                                 <configuration>
                                     <target>
                                         <delete dir="${project.build.directory}/jboss-as"/>
@@ -180,9 +161,7 @@
         <profile>
             <id>standalone</id>
             <activation>
-                <property>
-                    <name>!domain</name>
-                </property>
+                <property><name>!domain</name></property>
             </activation>
             <build>
                 <plugins>
@@ -209,9 +188,7 @@
         <profile>
             <id>domain</id>
             <activation>
-                <property>
-                    <name>domain</name>
-                </property>
+                <property><name>domain</name></property>
             </activation>
             <properties>
                 <domain>true</domain>

@@ -18,18 +18,22 @@
 package org.wildfly.test.integration.vdx.domain;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.wildfly.test.integration.vdx.transformations.AddNonExistentElementToMessagingSubsystem;
 import org.wildfly.test.integration.vdx.transformations.TypoInExtensions;
 import org.wildfly.test.integration.vdx.utils.StringRegexUtils;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 /**
+ *
  * Created by mnovak on 11/28/16.
  */
+@RunAsClient
+@RunWith(Arquillian.class)
 public class SmokeDomainTestCase extends DomainTestBase {
     @Test
-    @RunAsClient
     @ServerConfig(configuration = "duplicate-attribute.xml")
     public void testWithExistingConfigInResources() throws Exception {
         container().tryStartAndWaitForFail();
@@ -63,12 +67,11 @@ public class SmokeDomainTestCase extends DomainTestBase {
     }
 
     @Test
-    @RunAsClient
-    @ServerConfig(configuration = "domain-to-cripple.xml", xmlTransformationClass = TypoInExtensions.class)
-    public void testWithDynamicCripplingOfXmlWithExistingConfigInResources() throws Exception {
+    @ServerConfig(configuration = "domain-to-damage.xml", xmlTransformationClass = TypoInExtensions.class)
+    public void typoInExtensionsWithConfigInResources() throws Exception {
         container().tryStartAndWaitForFail();
         // assert that log contains bad message
-        String expectedErrorMessage = "OPVDX001: Validation error in domain-to-cripple.xml ----------------------------\n" +
+        String expectedErrorMessage = "OPVDX001: Validation error in domain-to-damage.xml ----------------------------\n" +
                 "|\n" +
                 "|  1: <?xml version=\"1.0\" encoding=\"UTF-8\"?><domain xmlns=\"urn:jboss:domain:5.0\">\n" +
                 "|  2:   <extensions>\n" +
@@ -88,12 +91,11 @@ public class SmokeDomainTestCase extends DomainTestBase {
     }
 
     @Test
-    @RunAsClient
     @ServerConfig(configuration = "domain.xml", xmlTransformationClass = AddNonExistentElementToMessagingSubsystem.class)
-    public void testWithDynamicCrippling() throws Exception {
+    public void addNonExistingElementToMessagingSubsystem() throws Exception {
         container().tryStartAndWaitForFail();
         // assert that log contains bad message
-        String expectedErrorMessage = "OPVDX001: Validation error in domain-to-cripple.xml ----------------------------\n" +
+        String expectedErrorMessage = "OPVDX001: Validation error in domain-to-damage.xml ----------------------------\n" +
                 "|\n" +
                 "|  1: <?xml version=\"1.0\" encoding=\"UTF-8\"?><domain xmlns=\"urn:jboss:domain:5.0\">\n" +
                 "|  2:   <extensions>\n" +

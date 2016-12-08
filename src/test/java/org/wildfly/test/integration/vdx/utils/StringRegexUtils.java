@@ -88,7 +88,7 @@ public class StringRegexUtils {
 
     // just for fast tries
     public static void main(String[] args) {
-        String expectedErrorMessage = "OPVDX001: Validation error in standalone-full-ha-to-cripple.xml ================\n" +
+        String expectedErrorMessage = "OPVDX001: Validation error in standalone-full-ha-to-damage.xml ================\n" +
                 "\n" +
                 "  1: <?xml version=\"1.0\" encoding=\"UTF-8\"?><server xmlns=\"urn:jboss:domain:5.0\">\n" +
                 "  2:   <extensions>\n" +
