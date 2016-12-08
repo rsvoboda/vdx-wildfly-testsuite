@@ -1,0 +1,242 @@
+<!-- todo use dependency management and plugin management from parent pom for versions -->
+<!--
+     Copyright 2016 Red Hat, Inc, and individual contributors.
+    
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+    
+     http://www.apache.org/licenses/LICENSE-2.0
+    
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>21</version>
+    </parent>
+
+    <groupId>org.wildfly</groupId>
+    <artifactId>wildfly-ts-integ-vdx</artifactId>
+    <version>1.0.0.Alpha1-SNAPSHOT</version>
+
+    <packaging>jar</packaging>
+    <name>WildFly Test Suite: Integration - VDX</name>
+
+    <properties>
+        <jboss.home>IF-NOT-DEFINED-WILDFLY-WILL-BE-DOWNLOADED-UNZIPPED-AND-USED-AUTOMATICALLY</jboss.home>
+        <domain>false</domain> <!-- if tests for domain are executed, set this to true by -Ddomain=true -->
+
+        <version.org.projectodd.vdx>1.1.1</version.org.projectodd.vdx>
+        <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
+
+        <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
+        <version.org.jboss.wildfly.dist>10.1.0.Final</version.org.jboss.wildfly.dist>
+        <version.org.apache.maven.plugins.maven-antrun-plugin>1.8</version.org.apache.maven.plugins.maven-antrun-plugin>
+
+        <version.org.apache.maven.plugins.maven-surefire-plugin>2.19.1
+        </version.org.apache.maven.plugins.maven-surefire-plugin>
+        <version.org.wildfly.arquillian.wildfly-arquillian-everything>1.0.2.Final
+        </version.org.wildfly.arquillian.wildfly-arquillian-everything>
+        <version.org.apache.maven.plugins.maven-dependency-plugin>2.10
+        </version.org.apache.maven.plugins.maven-dependency-plugin>
+        <version.org.wildfly.extras.creaper>1.2.0</version.org.wildfly.extras.creaper>
+        <arquillian.launch>jboss</arquillian.launch>
+        <version.junit>4.12</version.junit>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectodd.vdx</groupId>
+            <artifactId>vdx-core</artifactId>
+            <version>${version.org.projectodd.vdx}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>${version.org.jboss.logging.jboss-logging}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- creaper dependencies - used for bad xml snippets injection to xml configuration of WF10 server -->
+        <dependency>
+            <groupId>org.wildfly.extras.creaper</groupId>
+            <artifactId>creaper-core</artifactId>
+            <version>${version.org.wildfly.extras.creaper}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.extras.creaper</groupId>
+            <artifactId>creaper-commands</artifactId>
+            <version>${version.org.wildfly.extras.creaper}</version>
+        </dependency>
+        <!-- arquillian dependencies  -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <version>${version.org.jboss.arquillian}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-managed</artifactId>
+            <version>${version.org.wildfly.arquillian.wildfly-arquillian-everything}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly.arquillian</groupId>
+            <artifactId>wildfly-arquillian-container-domain-managed</artifactId>
+            <version>${version.org.wildfly.arquillian.wildfly-arquillian-everything}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-dist</artifactId>
+            <version>${version.org.jboss.wildfly.dist}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <!-- download wildfly 10.x if jboss.home system property is not defined and unzip it -->
+        <profile>
+            <id>download-wildfly</id>
+            <activation>
+                <property>
+                    <name>!jboss.home</name>
+                </property>
+            </activation>
+            <properties>
+                <jboss.home>${basedir}/target/jboss-as</jboss.home>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${version.org.apache.maven.plugins.maven-dependency-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>unpack-jboss-as</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>wildfly-dist</artifactId>
+                                            <version>${version.org.jboss.wildfly.dist}</version>
+                                            <type>zip</type>
+                                            <overWrite>true</overWrite>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>${version.org.apache.maven.plugins.maven-antrun-plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>rename-unpacked-jboss-as</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <delete dir="${project.build.directory}/jboss-as"/>
+                                        <move todir="${project.build.directory}/jboss-as">
+                                            <fileset dir="${project.build.directory}">
+                                                <include name="jboss*/**/*"/>
+                                                <include name="wildfly*/**/*"/>
+                                            </fileset>
+                                            <cutdirsmapper dirs="1"/>
+                                        </move>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- if "domain" system property is not defined then by default run tests in standalone mode -->
+        <profile>
+            <id>standalone</id>
+            <activation>
+                <property>
+                    <name>!domain</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>org.wildfly.test.integration.vdx.category.StandaloneTests</groups>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>
+                                    org.wildfly.arquillian:wildfly-arquillian-container-domain-managed
+                                </classpathDependencyExclude>
+                            </classpathDependencyExcludes>
+                            <systemPropertyVariables>
+                                <jboss.home>${jboss.home}</jboss.home>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- if "domain" system property is specified, run tests in domain mode -->
+        <profile>
+            <id>domain</id>
+            <activation>
+                <property>
+                    <name>domain</name>
+                </property>
+            </activation>
+            <properties>
+                <domain>true</domain>
+                <arquillian.xml>arquillian-domain.xml</arquillian.xml>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <groups>org.wildfly.test.integration.vdx.category.DomainTests</groups>
+                            <classpathDependencyExcludes>
+                                <classpathDependencyExclude>
+                                    org.wildfly.arquillian:wildfly-arquillian-container-managed
+                                </classpathDependencyExclude>
+                            </classpathDependencyExcludes>
+                            <systemPropertyVariables>
+                                <jboss.home>${jboss.home}</jboss.home>
+                                <arquillian.xml>arquillian-domain.xml</arquillian.xml>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
