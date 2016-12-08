@@ -20,7 +20,10 @@ package org.wildfly.test.integration.vdx.standalone;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.wildfly.test.integration.vdx.TestBase;
+import org.wildfly.test.integration.vdx.category.StandaloneTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 import static org.junit.Assert.assertTrue;
@@ -32,7 +35,8 @@ import static org.junit.Assert.assertTrue;
 
 @RunAsClient
 @RunWith(Arquillian.class)
-public class JBossWSTestCase extends StandaloneTestBase {
+@Category(StandaloneTests.class)
+public class JBossWSTestCase extends TestBase {
 
     /*
      * <modify-wsdl-address /> instead of <modify-wsdl-address>true</modify-wsdl-address>

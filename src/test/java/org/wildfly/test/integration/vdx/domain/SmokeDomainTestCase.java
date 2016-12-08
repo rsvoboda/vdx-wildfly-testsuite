@@ -20,7 +20,10 @@ package org.wildfly.test.integration.vdx.domain;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.wildfly.test.integration.vdx.TestBase;
+import org.wildfly.test.integration.vdx.category.DomainTests;
 import org.wildfly.test.integration.vdx.transformations.AddNonExistentElementToMessagingSubsystem;
 import org.wildfly.test.integration.vdx.transformations.TypoInExtensions;
 import org.wildfly.test.integration.vdx.utils.StringRegexUtils;
@@ -32,7 +35,8 @@ import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
  */
 @RunAsClient
 @RunWith(Arquillian.class)
-public class SmokeDomainTestCase extends DomainTestBase {
+@Category(DomainTests.class)
+public class SmokeDomainTestCase extends TestBase {
     @Test
     @ServerConfig(configuration = "duplicate-attribute.xml")
     public void testWithExistingConfigInResources() throws Exception {

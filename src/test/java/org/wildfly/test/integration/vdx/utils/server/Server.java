@@ -66,7 +66,7 @@ public interface Server {
      * @param controller arquillian container controller
      * @return Server instance - standalone by default or domain if -Ddomain=true is set
      */
-    public static Server create(ContainerController controller) {
+    public static Server getOrCreate(ContainerController controller) {
         if (server == null) {
             if (OperatingMode.isDomain()) {
                 return new ManagedDomain(controller);

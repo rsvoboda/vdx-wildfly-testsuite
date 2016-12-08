@@ -24,7 +24,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.wildfly.test.integration.vdx.standalone.StandaloneTestBase;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
 import org.wildfly.test.integration.vdx.utils.server.Server;
 
@@ -37,8 +36,6 @@ import java.util.regex.Pattern;
 
 /**
  * Do not inherit from this class as it's common for standalone and domain tests! For standalone tests inherit from
- *
- * @see StandaloneTestBase and for domain tests inherit from @see DomainTestBase.
  */
 public class TestBase {
 
@@ -52,7 +49,7 @@ public class TestBase {
     private Path testDirectory;
 
     public Server container() {
-        return Server.create(controller);
+        return Server.getOrCreate(controller);
     }
 
     /**
