@@ -77,7 +77,7 @@ public interface Server {
         return server;
     }
 
-    public Path getServerLog();
+    public Path getServerLogPath();
 
     public String getErrorMessageFromServerStart() throws Exception;
 }

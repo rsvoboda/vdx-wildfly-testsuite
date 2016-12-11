@@ -88,7 +88,7 @@ public class TestBase {
         testDirectory = Paths.get("target", "server-logs", this.getClass().getSimpleName(), testName.getMethodName());
     }
 
-    @After public void archiveServerLog() throws Exception {
+    @After public void tearDown() throws Exception {
         System.out.println(
                 "----------------------------------------- Stop " + this.getClass().getSimpleName() + " - " + testName
                         .getMethodName() + " -----------------------------------------");
@@ -98,7 +98,7 @@ public class TestBase {
     private void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {
 
         // if no log then return
-        if (!container().getServerLog().toFile().exists()) {
+        if (!container().getServerLogPath().toFile().exists()) {
             return;
         }
 
@@ -108,7 +108,7 @@ public class TestBase {
             archiveDirectory.mkdirs();
         }
         // copy server.log files for standalone or host-controller.log for domain
-        new FileUtils().copyFileToDirectory(container().getServerLog(), archiveDirectory.toPath());
-        container().getServerLog().toFile().delete();
+        new FileUtils().copyFileToDirectory(container().getServerLogPath(), archiveDirectory.toPath());
+        container().getServerLogPath().toFile().delete();
     }
 }

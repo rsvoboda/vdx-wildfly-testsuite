@@ -65,7 +65,7 @@ public class StandaloneServer extends AbstractServer {
     }
 
     @Override
-    public Path getServerLog() {
+    public Path getServerLogPath() {
         return Paths.get(JBOSS_HOME, STANDALONE_DIRECTORY, "log", "server.log");
     }
 

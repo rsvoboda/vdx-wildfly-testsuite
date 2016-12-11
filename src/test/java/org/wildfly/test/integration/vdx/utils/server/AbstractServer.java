@@ -67,7 +67,7 @@ public abstract class AbstractServer implements Server {
     }
 
     @Override
-    public abstract Path getServerLog();
+    public abstract Path getServerLogPath();
 
     @Override
     public String getErrorMessageFromServerStart() throws Exception {

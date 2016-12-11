@@ -26,6 +26,8 @@ import java.util.Scanner;
 
 public class FileUtils {
 
+    // TODO check if Java 8 methods can't be used instead these methods
+
     public void copyFileFromResourcesToServer(String resourceFile, String targetDirectory, boolean override) throws Exception {
         if (resourceFile == null || "".equals(resourceFile)) {
             return;

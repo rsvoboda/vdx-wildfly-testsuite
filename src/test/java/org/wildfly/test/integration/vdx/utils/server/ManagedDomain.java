@@ -54,7 +54,7 @@ public class ManagedDomain extends AbstractServer {
     }
 
     @Override
-    public Path getServerLog() {
+    public Path getServerLogPath() {
         return Paths.get(JBOSS_HOME, DOMAIN_DIRECTORY, "log", "host-controller.log");
     }
 
