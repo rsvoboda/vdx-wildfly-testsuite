@@ -42,9 +42,9 @@ public class JBossWSTestCase extends TestBase {
      * <modify-wsdl-address /> instead of <modify-wsdl-address>true</modify-wsdl-address>
      */
     @Test
-    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddWsdlAddressElementWithNoValue.groovy",
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddModifyWsdlAddressElementWithNoValue.groovy",
             subtreeName = "webservices", subsystemName = "webservices")
-    public void addWsdlAddressElementWithNoValue()throws Exception {
+    public void modifyWsdlAddressElementWithNoValue()throws Exception {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
@@ -52,6 +52,53 @@ public class JBossWSTestCase extends TestBase {
         assertTrue(errorLog.contains("<modify-wsdl-address/>"));
         assertTrue(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
         assertTrue(errorLog.contains("|                  STRING"));
-
     }
+
+    /*
+     * <mmodify-wsdl-address>true</mmodify-wsdl-address> instead of <modify-wsdl-address>true</modify-wsdl-address>
+     */
+    @Test
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices")
+    public void incorrectlyNamedModifyWsdlAddressElement()throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
+        assertTrue(errorLog.contains("<mmodify-wsdl-address>true</mmodify-wsdl-address>"));
+        assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
+        assertTrue(errorLog.contains(" Did you mean 'modify-wsdl-address'?"));
+        assertTrue(errorLog.contains("Elements allowed here are:"));
+    }
+
+    /*
+     * <modify-wsdl-address>ttrue</modify-wsdl-address> instead of <modify-wsdl-address>true</modify-wsdl-address>
+     */
+    @Test
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddModifyWsdlAddressElementWithIncorrectValue.groovy",
+            subtreeName = "webservices", subsystemName = "webservices")
+    public void incorrectValueOfModifyWsdlAddressElement()throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
+        assertTrue(errorLog.contains("<modify-wsdl-address>ttrue</modify-wsdl-address>"));
+        assertTrue(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
+        assertTrue(errorLog.contains("                  STRING"));
+    }
+
+/*  TODO ... can it be done via creaper ?
+        <subsystem xmlns="urn:jboss:domain:webservices:2.0">
+            <wsdl-host>${jboss.bind.address:127.0.0.1}</wsdl-host>
+            <mmodify-wsdl-address>true</modify-wsdl-address>
+            <endpoint-config name="Standard-Endpoint-Config"/>
+            <endpoint-config name="Recording-Endpoint-Config">
+                <pre-handler-chain name="recording-handlers" protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
+                    <handler name="RecordingHandler" class="org.jboss.ws.common.invocation.RecordingServerHandler"/>
+                </pre-handler-chain>
+            </endpoint-config>
+            <client-config name="Standard-Client-Config"/>
+        </subsystem>
+ */
+
 }

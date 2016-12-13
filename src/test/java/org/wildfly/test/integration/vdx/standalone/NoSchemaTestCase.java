@@ -76,7 +76,7 @@ public class NoSchemaTestCase extends TestBase {
      * only stacktrace based error messages are available
      */
     @Test
-    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddWsdlAddressElementWithNoValue.groovy",
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddModifyWsdlAddressElementWithNoValue.groovy",
             subtreeName = "webservices", subsystemName = "webservices")
     public void addWsdlAddressElementWithNoValueNoSchemaAvailable()throws Exception {
         container().tryStartAndWaitForFail();
@@ -97,7 +97,7 @@ public class NoSchemaTestCase extends TestBase {
      *   from /path/to/server/docs/schema - disabling validation error pretty printing' is available in the log
      */
     @Test
-    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddWsdlAddressElementWithNoValue.groovy",
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddModifyWsdlAddressElementWithNoValue.groovy",
             subtreeName = "webservices", subsystemName = "webservices")
     public void ensureNoSchemasAvailableMessage()throws Exception {
         container().tryStartAndWaitForFail();
