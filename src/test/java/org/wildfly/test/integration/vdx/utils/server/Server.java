@@ -15,8 +15,9 @@
  *
  */
 
-package org.wildfly.test.integration.vdx.utils.server;import org.jboss.arquillian.container.test.api.ContainerController;
-import org.wildfly.test.integration.vdx.utils.OperatingMode;
+package org.wildfly.test.integration.vdx.utils.server;
+
+import org.jboss.arquillian.container.test.api.ContainerController;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,23 +25,23 @@ import java.nio.file.Paths;
 
 public interface Server {
 
-    public static final String JBOSS_HOME = System.getProperty("jboss.home", "jboss-as");
-    public static final String DEFAULT_SERVER_CONFIG = OperatingMode.isDomain() ? "domain.xml" : "standalone.xml";
-    public static final String DEFAULT_HOST_CONFIG = "host.xml";
+    String JBOSS_HOME = System.getProperty("jboss.home", "jboss-as");
+    String DEFAULT_SERVER_CONFIG = isDomain() ? "domain.xml" : "standalone.xml";
+    String DEFAULT_HOST_CONFIG = "host.xml";
 
-    public static final String STANDALONE_DIRECTORY = "standalone";
-    public static final String DOMAIN_DIRECTORY = "domain";
+    String STANDALONE_DIRECTORY = "standalone";
+    String DOMAIN_DIRECTORY = "domain";
 
-    public static final String PATH_TO_STANDALONE_DIRECTORY = Paths.get(Server.JBOSS_HOME, STANDALONE_DIRECTORY, "configuration").toString();
-    public static final String PATH_TO_DOMAIN_DIRECTORY = Paths.get(Server.JBOSS_HOME, DOMAIN_DIRECTORY, "configuration").toString();
+    String PATH_TO_STANDALONE_DIRECTORY = Paths.get(Server.JBOSS_HOME, STANDALONE_DIRECTORY, "configuration").toString();
+    String PATH_TO_DOMAIN_DIRECTORY = Paths.get(Server.JBOSS_HOME, DOMAIN_DIRECTORY, "configuration").toString();
 
-    public static final String STANDALONE_RESOURCES_DIRECTORY = "configurations" + File.separator + "standalone" + File.separator;
-    public static final String DOMAIN_RESOURCES_DIRECTORY = "configurations" + File.separator + "domain" + File.separator;
+    String STANDALONE_RESOURCES_DIRECTORY = "configurations" + File.separator + "standalone" + File.separator;
+    String DOMAIN_RESOURCES_DIRECTORY = "configurations" + File.separator + "domain" + File.separator;
 
-    static final String LOGGING_PROPERTIES_FILE_NAME = "logging.properties";
-    static final String ERRORS_LOG_FILE_NAME = "target/errors.log";
+    String LOGGING_PROPERTIES_FILE_NAME = "logging.properties";
+    String ERRORS_LOG_FILE_NAME = "target/errors.log";
 
-    static final Server server = null;
+    Server server = null;
 
     /**
      * Starts the server. If @ServerConfig annotation is present on method in calling stacktrace (for example test method) then
@@ -48,16 +49,24 @@ public interface Server {
      *
      * Start of the server is expected to fail due to xml syntac error. It does not throw any exception when  tryStartAndWaitForFail of server fails.
      *
-     * @throws Exception
+     * @throws Exception when something unexpected happens
      */
-    public void tryStartAndWaitForFail() throws Exception;
+    void tryStartAndWaitForFail() throws Exception;
 
     /**
      * Stops server.
      *
      * Not really useful for this testing but can be handy.
      */
-    public void stop();
+    void stop();
+
+    /**
+     *
+     * @return true if started server is in domain mode. false if it's standalone mode.
+     */
+    static boolean isDomain() {
+        return Boolean.parseBoolean(System.getProperty("domain", "false"));
+    }
 
     /**
      * Creates instance of server. If -Ddomain=true system property is specified it will be domain server,
@@ -66,9 +75,9 @@ public interface Server {
      * @param controller arquillian container controller
      * @return Server instance - standalone by default or domain if -Ddomain=true is set
      */
-    public static Server getOrCreate(ContainerController controller) {
+    static Server getOrCreate(ContainerController controller) {
         if (server == null) {
-            if (OperatingMode.isDomain()) {
+            if (isDomain()) {
                 return new ManagedDomain(controller);
             } else {
                 return new StandaloneServer(controller);
@@ -77,7 +86,7 @@ public interface Server {
         return server;
     }
 
-    public Path getServerLogPath();
+    Path getServerLogPath();
 
-    public String getErrorMessageFromServerStart() throws Exception;
+    String getErrorMessageFromServerStart() throws Exception;
 }
