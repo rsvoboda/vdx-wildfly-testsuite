@@ -133,18 +133,22 @@ public abstract class AbstractServer implements Server {
 
             if (serverConfig.subtreeName().equals("")) {  // case without subtree
                 getOfflineManangementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy()).build());
+                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
+                                .build());
             }
             if (serverConfig.profileName().equals("")) {  // standalone case with subtree
                 getOfflineManangementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy()).
-                                subtree(serverConfig.subtreeName(), Subtree.subsystem(serverConfig.subsystemName())).build());
+                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                                .subtree(serverConfig.subtreeName(), Subtree.subsystem(serverConfig.subsystemName()))
+                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
+                                .build());
 
             } else {  // domain case  with subtree
                 getOfflineManangementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy()).
-                                subtree(serverConfig.subtreeName(),
-                                        Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
+                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                                .subtree(serverConfig.subtreeName(),Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
+                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
 
             }

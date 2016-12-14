@@ -72,4 +72,16 @@ import java.lang.annotation.Target;
      * server's profile, applicable only for domain
      */
     String profileName() default "";
+
+    // provide variable name and value for transformation script
+
+    /**
+     * variable name for transformation script
+     */
+    String parameterName() default "foo";
+
+    /**
+     * variable value for transformation script
+     */
+    String parameterValue() default "bar";
 }

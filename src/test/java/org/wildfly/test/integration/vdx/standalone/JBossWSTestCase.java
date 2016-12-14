@@ -87,18 +87,33 @@ public class JBossWSTestCase extends TestBase {
         assertTrue(errorLog.contains("                  STRING"));
     }
 
-/*  TODO ... can it be done via creaper ?
-        <subsystem xmlns="urn:jboss:domain:webservices:2.0">
-            <wsdl-host>${jboss.bind.address:127.0.0.1}</wsdl-host>
-            <mmodify-wsdl-address>true</modify-wsdl-address>
-            <endpoint-config name="Standard-Endpoint-Config"/>
-            <endpoint-config name="Recording-Endpoint-Config">
-                <pre-handler-chain name="recording-handlers" protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
-                    <handler name="RecordingHandler" class="org.jboss.ws.common.invocation.RecordingServerHandler"/>
-                </pre-handler-chain>
-            </endpoint-config>
-            <client-config name="Standard-Client-Config"/>
-        </subsystem>
- */
+    /*
+     * use webservices:1.1 instead of webservices:2.0 schema
+     */
+    @Test
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "ModifySubsystemConfiguration.groovy",
+            subtreeName = "subsystem", subsystemName = "webservices",
+            parameterName = "configurationXml",
+            parameterValue =
+                "        <subsystem xmlns=\"urn:jboss:domain:webservices:1.1\">\n"
+                + "            <wsdl-host>${jboss.bind.address:127.0.0.1}</wsdl-host>\n"
+                + "            <endpoint-config name=\"Standard-Endpoint-Config\"/>\n"
+                + "            <endpoint-config name=\"Recording-Endpoint-Config\">\n"
+                + "                <pre-handler-chain name=\"recording-handlers\" protocol-bindings=\"##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM\">\n"
+                + "                    <handler name=\"RecordingHandler\" class=\"org.jboss.ws.common.invocation.RecordingServerHandler\"/>\n"
+                + "                </pre-handler-chain>\n"
+                + "            </endpoint-config>\n"
+                + "            <client-config name=\"Standard-Client-Config\"/>\n"
+                + "        </subsystem>"
+    )
+    public void oldSubsystemVersionOnNewerConfiguration()throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
+        assertTrue(errorLog.contains("^^^^ 'client-config' isn't an allowed element here"));
+        assertTrue(errorLog.contains("Elements allowed here are: endpoint-config, modify-wsdl-address,"));
+        assertTrue(errorLog.contains("wsdl-host, wsdl-port, wsdl-secure-port"));
+    }
 
 }
