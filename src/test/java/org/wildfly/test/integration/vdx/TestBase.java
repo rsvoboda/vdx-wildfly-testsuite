@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
+import org.wildfly.test.integration.vdx.utils.server.AbstractServer;
 import org.wildfly.test.integration.vdx.utils.server.Server;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class TestBase {
     private Path testDirectory;
 
     public Server container() {
-        return Server.getOrCreate(controller);
+        return AbstractServer.getOrCreate(controller);
     }
 
     /**

@@ -17,8 +17,6 @@
 
 package org.wildfly.test.integration.vdx.utils.server;
 
-import org.jboss.arquillian.container.test.api.ContainerController;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,8 +38,6 @@ public interface Server {
 
     String LOGGING_PROPERTIES_FILE_NAME = "logging.properties";
     String ERRORS_LOG_FILE_NAME = "target/errors.log";
-
-    Server server = null;
 
     /**
      * Starts the server. If @ServerConfig annotation is present on method in calling stacktrace (for example test method) then
@@ -66,24 +62,6 @@ public interface Server {
      */
     static boolean isDomain() {
         return Boolean.parseBoolean(System.getProperty("domain", "false"));
-    }
-
-    /**
-     * Creates instance of server. If -Ddomain=true system property is specified it will be domain server,
-     * otherwise standalone server will be used.
-     *
-     * @param controller arquillian container controller
-     * @return Server instance - standalone by default or domain if -Ddomain=true is set
-     */
-    static Server getOrCreate(ContainerController controller) {
-        if (server == null) {
-            if (isDomain()) {
-                return new ManagedDomain(controller);
-            } else {
-                return new StandaloneServer(controller);
-            }
-        }
-        return server;
     }
 
     Path getServerLogPath();

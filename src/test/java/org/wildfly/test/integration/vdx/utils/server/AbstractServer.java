@@ -17,6 +17,7 @@
 
 package org.wildfly.test.integration.vdx.utils.server;
 
+import org.jboss.arquillian.container.test.api.ContainerController;
 import org.junit.Assert;
 import org.wildfly.extras.creaper.commands.foundation.offline.ConfigurationFileBackup;
 import org.wildfly.extras.creaper.commands.foundation.offline.xml.GroovyXmlTransform;
@@ -32,6 +33,7 @@ import java.nio.file.Paths;
 public abstract class AbstractServer implements Server {
 
     private ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
+    private static Server server = null;
 
     @Override
     public void tryStartAndWaitForFail() throws Exception {
@@ -73,6 +75,25 @@ public abstract class AbstractServer implements Server {
     public String getErrorMessageFromServerStart() throws Exception {
         return FileUtils.readFile(Paths.get(ERRORS_LOG_FILE_NAME).toString());
     }
+
+    /**
+     * Creates instance of server. If -Ddomain=true system property is specified it will be domain server,
+     * otherwise standalone server will be used.
+     *
+     * @param controller arquillian container controller
+     * @return Server instance - standalone by default or domain if -Ddomain=true is set
+     */
+    public static Server getOrCreate(ContainerController controller) {
+        if (server == null) {
+            if (Server.isDomain()) {
+                server = new ManagedDomain(controller);
+            } else {
+                server = new StandaloneServer(controller);
+            }
+        }
+        return server;
+    }
+
 
     /**
      * This will copy file from resources directory to $JBOSS_HOME/<profile>/configuration directory and only if
