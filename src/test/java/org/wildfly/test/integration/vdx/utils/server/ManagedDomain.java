@@ -44,8 +44,13 @@ public class ManagedDomain extends AbstractServer {
         ServerConfig serverConfig = getServerConfig();
         Map<String, String> containerProperties = new HashMap<>();
         if (serverConfig != null) {
-            containerProperties.put("domainConfig", serverConfig.configuration());
-            containerProperties.put("hostConfig", serverConfig.hostConfig());
+            if (serverConfig.configuration().startsWith("host")) {  // for modifications in host.xml, see HostXmlSmokeTestCase
+                containerProperties.put("domainConfig", DEFAULT_SERVER_CONFIG);
+                containerProperties.put("hostConfig", serverConfig.configuration());
+            } else {
+                containerProperties.put("domainConfig", serverConfig.configuration());
+                containerProperties.put("hostConfig", serverConfig.hostConfig());
+            }
         } else { // if no server config was specified return arquillian to default // todo take this from arquillian.xml
             containerProperties.put("domainConfig", DEFAULT_SERVER_CONFIG);
             containerProperties.put("hostConfig", DEFAULT_HOST_CONFIG);
@@ -72,8 +77,7 @@ public class ManagedDomain extends AbstractServer {
     @Override
     protected OfflineManagementClient getOfflineManangementClient() throws Exception {
         return ManagementClient.offline(OfflineOptions
-                .domain()
-                .forProfile("default").build().rootDirectory(new File(JBOSS_HOME))
+                .domain().build().rootDirectory(new File(JBOSS_HOME))
                 .configurationFile(getServerConfig() == null ? DEFAULT_SERVER_CONFIG : getServerConfig().configuration())
                 .build());
     }

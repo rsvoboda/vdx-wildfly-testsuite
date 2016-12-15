@@ -152,11 +152,12 @@ public abstract class AbstractServer implements Server {
 
         } else {
 
-            if (serverConfig.subtreeName().equals("")) {  // case without subtree
+            if (serverConfig.subtreeName().equals("")) {  // standalone or domain case without subtree
                 getOfflineManangementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
+                return;
             }
             if (serverConfig.profileName().equals("")) {  // standalone case with subtree
                 getOfflineManangementClient()
@@ -165,7 +166,7 @@ public abstract class AbstractServer implements Server {
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
 
-            } else {  // domain case  with subtree
+            } else {  // domain case with subtree
                 getOfflineManangementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
                                 .subtree(serverConfig.subtreeName(),Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
