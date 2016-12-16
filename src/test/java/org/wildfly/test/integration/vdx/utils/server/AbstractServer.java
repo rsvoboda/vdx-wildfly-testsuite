@@ -58,7 +58,7 @@ public abstract class AbstractServer implements Server {
             startServer();
 
             // fail the test if server starts
-            Assert.fail("Server started succesfully - probably xml was not invalidated/damaged correctly.");
+            Assert.fail("Server started successfully - probably xml was not invalidated/damaged correctly.");
 
         } catch (Exception ex) {
             System.out.println("Start of the server failed. This is expected.");
