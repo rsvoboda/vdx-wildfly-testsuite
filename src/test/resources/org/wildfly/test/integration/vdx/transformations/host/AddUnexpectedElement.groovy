@@ -1,1 +1,0 @@
-root.extensions.appendNode { 'foo'('bar') }
