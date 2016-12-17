@@ -17,6 +17,8 @@
 
 package org.wildfly.test.integration.vdx.utils.server;
 
+import org.wildfly.extras.creaper.core.offline.OfflineCommand;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,6 +50,8 @@ public interface Server {
      * @throws Exception when something unexpected happens
      */
     void tryStartAndWaitForFail() throws Exception;
+
+    void tryStartAndWaitForFail(OfflineCommand... offlineCommands) throws Exception;
 
     /**
      * Stops server.

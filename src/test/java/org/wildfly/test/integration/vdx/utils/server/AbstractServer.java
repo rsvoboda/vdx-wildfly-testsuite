@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.wildfly.extras.creaper.commands.foundation.offline.ConfigurationFileBackup;
 import org.wildfly.extras.creaper.commands.foundation.offline.xml.GroovyXmlTransform;
 import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
+import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.extras.creaper.core.offline.OfflineManagementClient;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
@@ -36,7 +37,7 @@ public abstract class AbstractServer implements Server {
     private static Server server = null;
 
     @Override
-    public void tryStartAndWaitForFail() throws Exception {
+    public void tryStartAndWaitForFail(OfflineCommand... offlineCommands) throws Exception {
 
         // stop server if running
         stop();
@@ -50,8 +51,11 @@ public abstract class AbstractServer implements Server {
         // backup config
         backupConfiguration();
 
-        // modify config - only valid configuration files can be damaged
-        applyXmlTransformation();
+        if (offlineCommands == null) {
+            applyXmlTransformation();
+        } else {
+            getOfflineManangementClient().apply(offlineCommands);
+        }
 
         try {
             // tryStartAndWaitForFail - this must throw exception due invalid xml
@@ -66,6 +70,11 @@ public abstract class AbstractServer implements Server {
             // restore original config if it exists
             restoreConfigIfBackupExists();
         }
+    }
+
+    @Override
+    public void tryStartAndWaitForFail() throws Exception {
+        tryStartAndWaitForFail(null);
     }
 
     @Override
