@@ -69,6 +69,14 @@ public class JBossWSTestCase extends TestBase {
         assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
         assertTrue(errorLog.contains(" Did you mean 'modify-wsdl-address'?"));
         assertTrue(errorLog.contains("Elements allowed here are:"));
+        assertTrue(errorLog.contains("client-config"));
+        assertTrue(errorLog.contains("wsdl-path-rewrite-rule"));
+        assertTrue(errorLog.contains("endpoint-config"));
+        assertTrue(errorLog.contains("wsdl-port"));
+        assertTrue(errorLog.contains("modify-wsdl-address"));
+        assertTrue(errorLog.contains("wsdl-secure-port"));
+        assertTrue(errorLog.contains("wsdl-host"));
+        assertTrue(errorLog.contains("wsdl-uri-scheme"));
     }
 
     /*

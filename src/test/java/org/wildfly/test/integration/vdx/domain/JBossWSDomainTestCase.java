@@ -78,4 +78,44 @@ public class JBossWSDomainTestCase extends TestBase {
     }
 
 
+    /*
+     * <mmodify-wsdl-address>true</mmodify-wsdl-address> instead of <modify-wsdl-address>true</modify-wsdl-address>
+     */
+    private void startAndCheckLogsForIncorrectlyNamedWsdlAddressElementWithNoValue() throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertTrue(errorLog.contains("<mmodify-wsdl-address>true</mmodify-wsdl-address>"));
+        assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
+        assertTrue(errorLog.contains(" Did you mean 'modify-wsdl-address'?"));
+        assertTrue(errorLog.contains("Elements allowed here are:"));
+    }
+
+    @Test
+    @ServerConfig(configuration = "domain.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices", profileName = "default")
+    public void incorrectlyNamedModifyWsdlAddressElement()throws Exception {
+        startAndCheckLogsForIncorrectlyNamedWsdlAddressElementWithNoValue();
+    }
+
+    @Test
+    @ServerConfig(configuration = "domain.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices", profileName = "ha")
+    public void incorrectlyNamedModifyWsdlAddressElementHa()throws Exception {
+        startAndCheckLogsForIncorrectlyNamedWsdlAddressElementWithNoValue();
+    }
+
+    @Test
+    @ServerConfig(configuration = "domain.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices", profileName = "full")
+    public void incorrectlyNamedModifyWsdlAddressElementFull()throws Exception {
+        startAndCheckLogsForIncorrectlyNamedWsdlAddressElementWithNoValue();
+    }
+    @Test
+    @ServerConfig(configuration = "domain.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices", profileName = "full-ha")
+    public void incorrectlyNamedModifyWsdlAddressElementFullHa()throws Exception {
+        startAndCheckLogsForIncorrectlyNamedWsdlAddressElementWithNoValue();
+    }
+
 }
