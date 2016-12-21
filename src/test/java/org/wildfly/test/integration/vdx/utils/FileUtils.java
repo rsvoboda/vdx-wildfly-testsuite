@@ -29,7 +29,7 @@ public class FileUtils {
 
     // TODO check if Java 8 methods can't be used instead these methods
 
-    public void copyFileFromResourcesToServer(String resourceFile, String targetDirectory, boolean override) throws Exception {
+    public static void copyFileFromResourcesToServer(String resourceFile, String targetDirectory, boolean override) throws Exception {
         if (resourceFile == null || "".equals(resourceFile)) {
             return;
         }
@@ -58,8 +58,8 @@ public class FileUtils {
         Files.copy(file, directory.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private Path getResourceFile(String file) throws URISyntaxException {
-        ClassLoader classLoader = getClass().getClassLoader();
+    private static Path getResourceFile(String file) throws URISyntaxException {
+        ClassLoader classLoader = FileUtils.class.getClassLoader();
         URL url = classLoader.getResource(file);
         if (url == null) {
             return null;
