@@ -215,5 +215,52 @@
                 </plugins>
             </build>
         </profile>
+
+        <!-- both standalone and domain mode tests -->
+        <profile>
+            <id>all</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>all-standalone</id>
+                                <goals><goal>test</goal></goals>
+                                <configuration>
+                                    <groups>org.wildfly.test.integration.vdx.category.StandaloneTests</groups>
+                                    <classpathDependencyExcludes>
+                                        <classpathDependencyExclude>
+                                            org.wildfly.arquillian:wildfly-arquillian-container-domain-managed
+                                        </classpathDependencyExclude>
+                                    </classpathDependencyExcludes>
+                                    <systemPropertyVariables>
+                                        <jboss.home>${jboss.home}</jboss.home>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>all-domain</id>
+                                <goals><goal>test</goal></goals>
+                                <configuration>
+                                    <groups>org.wildfly.test.integration.vdx.category.DomainTests</groups>
+                                    <classpathDependencyExcludes>
+                                        <classpathDependencyExclude>
+                                            org.wildfly.arquillian:wildfly-arquillian-container-managed
+                                        </classpathDependencyExclude>
+                                    </classpathDependencyExcludes>
+                                    <systemPropertyVariables>
+                                        <domain>true</domain>
+                                        <jboss.home>${jboss.home}</jboss.home>
+                                        <arquillian.xml>arquillian-domain.xml</arquillian.xml>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
