@@ -17,6 +17,7 @@
 
 package org.wildfly.test.integration.vdx.utils;import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,13 +58,13 @@ public class FileUtils {
         Files.copy(file, directory.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private Path getResourceFile(String file) {
+    private Path getResourceFile(String file) throws URISyntaxException {
         ClassLoader classLoader = getClass().getClassLoader();
         URL url = classLoader.getResource(file);
         if (url == null) {
             return null;
         } else {
-            return Paths.get(url.getPath());
+            return Paths.get(url.toURI()); // toURI is Windows-friendly
         }
     }
 
