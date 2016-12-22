@@ -72,8 +72,9 @@ public class StandaloneServer extends AbstractServer {
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (Files.notExists(Paths.get(PATH_TO_STANDALONE_DIRECTORY, getServerConfig().configuration()))) {
-            FileUtils.copyFileFromResourcesToServer(STANDALONE_RESOURCES_DIRECTORY + getServerConfig().configuration(), PATH_TO_STANDALONE_DIRECTORY, false);
+        if (Files.notExists(Paths.get(STANDALONE_CONFIGURATION_PATH.toString(), getServerConfig().configuration()))) {
+            FileUtils.copyFileFromResourcesToServer(STANDALONE_RESOURCES_DIRECTORY + getServerConfig().configuration(),
+                    STANDALONE_CONFIGURATION_PATH, false);
         }
     }
 
@@ -84,7 +85,7 @@ public class StandaloneServer extends AbstractServer {
 
     protected void copyLoggingPropertiesToConfiguration() throws Exception {
         String loggingPropertiesInResources = STANDALONE_RESOURCES_DIRECTORY + LOGGING_PROPERTIES_FILE_NAME;
-        FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, PATH_TO_STANDALONE_DIRECTORY, true);
+        FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, STANDALONE_CONFIGURATION_PATH, true);
     }
 
 }

@@ -32,8 +32,8 @@ public interface Server {
     String STANDALONE_DIRECTORY = "standalone";
     String DOMAIN_DIRECTORY = "domain";
 
-    String PATH_TO_STANDALONE_DIRECTORY = Paths.get(Server.JBOSS_HOME, STANDALONE_DIRECTORY, "configuration").toString();
-    String PATH_TO_DOMAIN_DIRECTORY = Paths.get(Server.JBOSS_HOME, DOMAIN_DIRECTORY, "configuration").toString();
+    Path STANDALONE_CONFIGURATION_PATH = Paths.get(Server.JBOSS_HOME, STANDALONE_DIRECTORY, "configuration");
+    Path DOMAIN_CONFIGURATION_PATH = Paths.get(Server.JBOSS_HOME, DOMAIN_DIRECTORY, "configuration");
 
     String STANDALONE_RESOURCES_DIRECTORY = "configurations" + File.separator + "standalone" + File.separator;
     String DOMAIN_RESOURCES_DIRECTORY = "configurations" + File.separator + "domain" + File.separator;

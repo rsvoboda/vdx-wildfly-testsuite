@@ -109,7 +109,7 @@ public class TestBase {
             archiveDirectory.mkdirs();
         }
         // copy server.log files for standalone or host-controller.log for domain
-        new FileUtils().copyFileToDirectory(container().getServerLogPath(), archiveDirectory.toPath());
+        FileUtils.copyFileToDirectory(container().getServerLogPath(), archiveDirectory.toPath());
         container().getServerLogPath().toFile().delete();
     }
 }

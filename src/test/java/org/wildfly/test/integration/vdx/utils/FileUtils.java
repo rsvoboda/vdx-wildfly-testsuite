@@ -31,7 +31,7 @@ public class FileUtils {
 
     // TODO check if Java 8 methods can't be used instead these methods
 
-    public static void copyFileFromResourcesToServer(String resourceFile, String targetDirectory, boolean override) throws Exception {
+    public static void copyFileFromResourcesToServer(String resourceFile, Path targetDirectory, boolean override) throws Exception {
         if (resourceFile == null || "".equals(resourceFile)) {
             return;
         }
@@ -41,7 +41,7 @@ public class FileUtils {
             throw new Exception("Resource file " + resourceFile + " does not exist.");
         }
 
-        Path targetPath = Paths.get(targetDirectory, sourcePath.getFileName().toString());
+        Path targetPath = Paths.get(targetDirectory.toString(), sourcePath.getFileName().toString());
         if (Files.exists(targetPath) && !override) {
             // file already exists in config directory so do nothing
             return;
@@ -56,7 +56,7 @@ public class FileUtils {
      * @param directory target directory
      * @throws Exception when copy fails
      */
-    public void copyFileToDirectory(Path file, Path directory) throws Exception {
+    public static void copyFileToDirectory(Path file, Path directory) throws Exception {
         Files.copy(file, directory.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
     }
 
