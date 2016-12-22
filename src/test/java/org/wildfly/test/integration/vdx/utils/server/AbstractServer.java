@@ -25,9 +25,9 @@ import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
 import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.extras.creaper.core.offline.OfflineManagementClient;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
-import org.wildfly.test.integration.vdx.utils.FileUtils;
 
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -82,7 +82,7 @@ public abstract class AbstractServer implements Server {
 
     @Override
     public String getErrorMessageFromServerStart() throws Exception {
-        return FileUtils.readFile(Paths.get(ERRORS_LOG_FILE_NAME).toString());
+        return String.join("\n", Files.readAllLines(Paths.get(ERRORS_LOG_FILE_NAME)));
     }
 
     /**

@@ -24,7 +24,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
-import org.wildfly.test.integration.vdx.utils.FileUtils;
 import org.wildfly.test.integration.vdx.utils.server.Server;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
@@ -102,7 +101,7 @@ public class NoSchemaTestCase extends TestBase {
     public void ensureNoSchemasAvailableMessage()throws Exception {
         container().tryStartAndWaitForFail();
 
-        String serverLog = FileUtils.readFile((container().getServerLogPath()).toString());
+        String serverLog = String.join("\n", Files.readAllLines(container().getServerLogPath()));
         assertTrue(serverLog.contains("OPVDX003: No schemas available"));
         assertTrue(serverLog.contains("disabling validation error pretty printing"));
     }

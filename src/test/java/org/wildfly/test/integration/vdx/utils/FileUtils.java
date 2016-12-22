@@ -17,15 +17,12 @@
 
 package org.wildfly.test.integration.vdx.utils;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Scanner;
 
 public class FileUtils {
 
@@ -57,20 +54,6 @@ public class FileUtils {
             return null;
         } else {
             return Paths.get(url.toURI()); // toURI is Windows-friendly
-        }
-    }
-
-    public static String readFile(String path) throws IOException {
-        File file = new File(path);
-        StringBuilder fileContents = new StringBuilder((int)file.length());
-        final String lineSeparator = System.getProperty("line.separator");
-
-        try (Scanner scanner = new Scanner(file)) {
-            while(scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine());
-                fileContents.append(lineSeparator);
-            }
-            return fileContents.toString();
         }
     }
 
