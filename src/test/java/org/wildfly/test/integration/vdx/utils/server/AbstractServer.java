@@ -74,7 +74,7 @@ public abstract class AbstractServer implements Server {
 
     @Override
     public void tryStartAndWaitForFail() throws Exception {
-        tryStartAndWaitForFail((OfflineCommand)null);
+        tryStartAndWaitForFail(null);
     }
 
     @Override
