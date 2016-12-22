@@ -78,7 +78,7 @@ public class ManagedDomain extends AbstractServer {
 
 
     @Override
-    protected OfflineManagementClient getOfflineManangementClient() throws Exception {
+    protected OfflineManagementClient getOfflineManagementClient() throws Exception {
         return ManagementClient.offline(OfflineOptions
                 .domain().build().rootDirectory(new File(JBOSS_HOME))
                 .configurationFile(getServerConfig() == null ? DEFAULT_SERVER_CONFIG : getServerConfig().configuration())

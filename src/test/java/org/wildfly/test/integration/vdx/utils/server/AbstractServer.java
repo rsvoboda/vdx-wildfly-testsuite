@@ -54,7 +54,7 @@ public abstract class AbstractServer implements Server {
         if (offlineCommands == null) {
             applyXmlTransformation();
         } else {
-            getOfflineManangementClient().apply(offlineCommands);
+            getOfflineManagementClient().apply(offlineCommands);
         }
 
         try {
@@ -74,7 +74,7 @@ public abstract class AbstractServer implements Server {
 
     @Override
     public void tryStartAndWaitForFail() throws Exception {
-        tryStartAndWaitForFail(null);
+        tryStartAndWaitForFail((OfflineCommand)null);
     }
 
     @Override
@@ -122,17 +122,16 @@ public abstract class AbstractServer implements Server {
                     "startServer() call. Check tryStartAndWaitForFail() sequence that backupConfiguration() was called.");
         }
         System.out.println("Restoring server configuration. Configuration to be restored " + getServerConfig());
-        getOfflineManangementClient().apply(configurationFileBackup.restore());
+        getOfflineManagementClient().apply(configurationFileBackup.restore());
     }
 
-    protected abstract OfflineManagementClient getOfflineManangementClient() throws Exception;
+    protected abstract OfflineManagementClient getOfflineManagementClient() throws Exception;
 
     private void backupConfiguration() throws Exception {
-        // todo creaper most likely does not backup/restore host.xml - double check this
         // destroy any existing backup config
-        getOfflineManangementClient().apply(configurationFileBackup.destroy());
+        getOfflineManagementClient().apply(configurationFileBackup.destroy());
         // backup any existing config
-        getOfflineManangementClient().apply(configurationFileBackup.backup());
+        getOfflineManagementClient().apply(configurationFileBackup.backup());
     }
 
     /**
@@ -149,6 +148,7 @@ public abstract class AbstractServer implements Server {
      *
      * @throws Exception if file not xml valid
      */
+    @SuppressWarnings("deprecation")
     private void applyXmlTransformation() throws Exception {
         ServerConfig serverConfig = getServerConfig();
 
@@ -157,26 +157,26 @@ public abstract class AbstractServer implements Server {
                 return;
             }
 
-            getOfflineManangementClient().apply(GroovyXmlTransform.of(serverConfig.xmlTransformationClass()).build());
+            getOfflineManagementClient().apply(GroovyXmlTransform.of(serverConfig.xmlTransformationClass()).build());
 
         } else {
 
             if (serverConfig.subtreeName().equals("")) {  // standalone or domain case without subtree
-                getOfflineManangementClient()
+                getOfflineManagementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
                 return;
             }
             if (serverConfig.profileName().equals("")) {  // standalone case with subtree
-                getOfflineManangementClient()
+                getOfflineManagementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
                                 .subtree(serverConfig.subtreeName(), Subtree.subsystem(serverConfig.subsystemName()))
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
 
             } else {  // domain case with subtree
-                getOfflineManangementClient()
+                getOfflineManagementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
                                 .subtree(serverConfig.subtreeName(),Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())

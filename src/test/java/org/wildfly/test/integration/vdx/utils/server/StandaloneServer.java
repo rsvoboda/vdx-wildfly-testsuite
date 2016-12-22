@@ -57,7 +57,7 @@ public class StandaloneServer extends AbstractServer {
     }
 
     @Override
-    protected OfflineManagementClient getOfflineManangementClient() throws Exception {
+    protected OfflineManagementClient getOfflineManagementClient() throws Exception {
         return ManagementClient.offline(OfflineOptions
                 .standalone()
                 .rootDirectory(new File(JBOSS_HOME))
