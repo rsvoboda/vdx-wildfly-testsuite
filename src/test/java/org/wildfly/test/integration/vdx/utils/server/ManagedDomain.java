@@ -25,6 +25,7 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.utils.FileUtils;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -65,10 +66,10 @@ public class ManagedDomain extends AbstractServer {
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (!FileUtils.isPathExists(Paths.get(PATH_TO_DOMAIN_DIRECTORY, getServerConfig().configuration()))) {
+        if (Files.notExists(Paths.get(PATH_TO_DOMAIN_DIRECTORY, getServerConfig().configuration()))) {
             FileUtils.copyFileFromResourcesToServer(DOMAIN_RESOURCES_DIRECTORY + getServerConfig().configuration(), PATH_TO_DOMAIN_DIRECTORY, false);
         }
-        if (!FileUtils.isPathExists(Paths.get(PATH_TO_DOMAIN_DIRECTORY, getServerConfig().hostConfig()))) {
+        if (Files.notExists(Paths.get(PATH_TO_DOMAIN_DIRECTORY, getServerConfig().hostConfig()))) {
             FileUtils.copyFileFromResourcesToServer(DOMAIN_RESOURCES_DIRECTORY + getServerConfig().hostConfig(), PATH_TO_DOMAIN_DIRECTORY, false);
         }
     }

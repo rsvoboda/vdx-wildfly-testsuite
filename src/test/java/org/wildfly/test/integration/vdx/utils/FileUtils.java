@@ -15,7 +15,9 @@
  *
  */
 
-package org.wildfly.test.integration.vdx.utils;import java.io.File;
+package org.wildfly.test.integration.vdx.utils;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -81,14 +83,5 @@ public class FileUtils {
             return fileContents.toString();
         }
     }
-
-    public static boolean isPathExists(Path path)   {
-        return path.toFile().exists();
-    }
-
-    // just for local testing
-//    public static void main(String[] args) {
-//        System.out.println(new FileUtils().getResourceFile("duplicaste-attribute.xml"));
-//    }
 
 }
