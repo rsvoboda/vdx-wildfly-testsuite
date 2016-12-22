@@ -34,6 +34,8 @@
     <properties>
         <domain>false</domain> <!-- if tests for domain are executed, set this to true by -Ddomain=true -->
         <jboss.home>IF-NOT-DEFINED-WILDFLY-WILL-BE-DOWNLOADED-UNZIPPED-AND-USED-AUTOMATICALLY</jboss.home>
+        <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
+
         <version.junit>4.12</version.junit>
         <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
         <version.org.jboss.logging.jboss-logging>3.3.0.Final</version.org.jboss.logging.jboss-logging>
@@ -219,6 +221,9 @@
         <!-- both standalone and domain mode tests -->
         <profile>
             <id>all</id>
+            <properties>
+                <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
