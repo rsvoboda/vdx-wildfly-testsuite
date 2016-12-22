@@ -50,16 +50,6 @@ public class FileUtils {
         Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    /**
-     * Copies file to directory. Overrides if the same file already exists in target directory.
-     * @param file file to copy
-     * @param directory target directory
-     * @throws Exception when copy fails
-     */
-    public static void copyFileToDirectory(Path file, Path directory) throws Exception {
-        Files.copy(file, directory.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-    }
-
     private static Path getResourceFile(String file) throws URISyntaxException {
         ClassLoader classLoader = FileUtils.class.getClassLoader();
         URL url = classLoader.getResource(file);

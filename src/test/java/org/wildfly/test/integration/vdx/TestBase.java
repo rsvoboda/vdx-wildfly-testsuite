@@ -24,13 +24,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.wildfly.test.integration.vdx.utils.FileUtils;
 import org.wildfly.test.integration.vdx.utils.server.AbstractServer;
 import org.wildfly.test.integration.vdx.utils.server.Server;
 
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,17 +99,16 @@ public class TestBase {
     private void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {
 
         // if no log then return
-        if (!container().getServerLogPath().toFile().exists()) {
+        if (Files.notExists(container().getServerLogPath())) {
             return;
         }
 
         // create directory with name of the test in target directory
-        File archiveDirectory = pathToArchiveDirectory.toFile();
-        if (!archiveDirectory.exists()) {
-            archiveDirectory.mkdirs();
+        if (Files.notExists(pathToArchiveDirectory)) {
+            Files.createDirectories(pathToArchiveDirectory);
         }
         // copy server.log files for standalone or host-controller.log for domain
-        FileUtils.copyFileToDirectory(container().getServerLogPath(), archiveDirectory.toPath());
-        container().getServerLogPath().toFile().delete();
+        Files.copy(container().getServerLogPath(), pathToArchiveDirectory.resolve(container().getServerLogPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        Files.delete(container().getServerLogPath());
     }
 }
