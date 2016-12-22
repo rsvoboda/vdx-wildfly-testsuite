@@ -17,8 +17,6 @@
 
 package org.wildfly.test.integration.vdx.utils;
 
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,35 +24,18 @@ import java.nio.file.StandardCopyOption;
 
 public class FileUtils {
 
-    // TODO check if Java 8 methods can't be used instead these methods
-
     public static void copyFileFromResourcesToServer(String resourceFile, Path targetDirectory, boolean override) throws Exception {
         if (resourceFile == null || "".equals(resourceFile)) {
             return;
         }
 
-        Path sourcePath = getResourceFile(resourceFile);
-        if (sourcePath == null) {
-            throw new Exception("Resource file " + resourceFile + " does not exist.");
-        }
-
+        Path sourcePath = Paths.get(ClassLoader.getSystemResource(resourceFile).toURI());
         Path targetPath = Paths.get(targetDirectory.toString(), sourcePath.getFileName().toString());
-        if (Files.exists(targetPath) && !override) {
-            // file already exists in config directory so do nothing
-            return;
-        }
 
-        Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private static Path getResourceFile(String file) throws URISyntaxException {
-        ClassLoader classLoader = FileUtils.class.getClassLoader();
-        URL url = classLoader.getResource(file);
-        if (url == null) {
-            return null;
-        } else {
-            return Paths.get(url.toURI()); // toURI is Windows-friendly
+        if (override || Files.notExists(targetPath)) {
+            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
     }
+
 
 }
