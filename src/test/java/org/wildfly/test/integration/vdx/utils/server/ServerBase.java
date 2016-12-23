@@ -31,7 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public abstract class AbstractServer implements Server {
+public abstract class ServerBase implements Server {
 
     private ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
     private static Server server = null;
@@ -95,9 +95,9 @@ public abstract class AbstractServer implements Server {
     public static Server getOrCreate(ContainerController controller) {
         if (server == null) {
             if (Server.isDomain()) {
-                server = new ManagedDomain(controller);
+                server = new ServerDomain(controller);
             } else {
-                server = new StandaloneServer(controller);
+                server = new ServerStandalone(controller);
             }
         }
         return server;

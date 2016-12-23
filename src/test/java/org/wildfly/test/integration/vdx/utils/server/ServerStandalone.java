@@ -31,14 +31,14 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StandaloneServer extends AbstractServer {
+public class ServerStandalone extends ServerBase {
 
 //    private static final String DEFAULT_VM_ARGUMENTS = "-server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m " +
 //            "-Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true";
 
     private ContainerController controller;
 
-    protected StandaloneServer(ContainerController controller) {
+    protected ServerStandalone(ContainerController controller) {
         this.controller = controller;
     }
 

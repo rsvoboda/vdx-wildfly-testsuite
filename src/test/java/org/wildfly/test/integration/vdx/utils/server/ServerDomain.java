@@ -31,11 +31,11 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ManagedDomain extends AbstractServer {
+public class ServerDomain extends ServerBase {
 
     ContainerController controller;
 
-    protected ManagedDomain(ContainerController controller) {
+    protected ServerDomain(ContainerController controller) {
         this.controller = controller;
     }
 
