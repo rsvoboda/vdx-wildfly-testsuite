@@ -26,8 +26,6 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * Created by rsvoboda on 11/30/16.
@@ -48,10 +46,10 @@ public class JBossWSTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
-        assertTrue(errorLog.contains("<modify-wsdl-address/>"));
-        assertTrue(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
-        assertTrue(errorLog.contains("|                  STRING"));
+        assertContains(errorLog, "OPVDX001: Validation error in standalone.xml");
+        assertContains(errorLog, "<modify-wsdl-address/>");
+        assertContains(errorLog, " ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was");
+        assertContains(errorLog, "|                  STRING");
     }
 
     /*
@@ -64,19 +62,19 @@ public class JBossWSTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
-        assertTrue(errorLog.contains("<mmodify-wsdl-address>true</mmodify-wsdl-address>"));
-        assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
-        assertTrue(errorLog.contains(" Did you mean 'modify-wsdl-address'?"));
-        assertTrue(errorLog.contains("Elements allowed here are:"));
-        assertTrue(errorLog.contains("client-config"));
-        assertTrue(errorLog.contains("wsdl-path-rewrite-rule"));
-        assertTrue(errorLog.contains("endpoint-config"));
-        assertTrue(errorLog.contains("wsdl-port"));
-        assertTrue(errorLog.contains("modify-wsdl-address"));
-        assertTrue(errorLog.contains("wsdl-secure-port"));
-        assertTrue(errorLog.contains("wsdl-host"));
-        assertTrue(errorLog.contains("wsdl-uri-scheme"));
+        assertContains(errorLog, "OPVDX001: Validation error in standalone.xml");
+        assertContains(errorLog, "<mmodify-wsdl-address>true</mmodify-wsdl-address>");
+        assertContains(errorLog, "^^^^ 'mmodify-wsdl-address' isn't an allowed element here");
+        assertContains(errorLog, " Did you mean 'modify-wsdl-address'?");
+        assertContains(errorLog, "Elements allowed here are:");
+        assertContains(errorLog, "client-config");
+        assertContains(errorLog, "wsdl-path-rewrite-rule");
+        assertContains(errorLog, "endpoint-config");
+        assertContains(errorLog, "wsdl-port");
+        assertContains(errorLog, "modify-wsdl-address");
+        assertContains(errorLog, "wsdl-secure-port");
+        assertContains(errorLog, "wsdl-host");
+        assertContains(errorLog, "wsdl-uri-scheme");
     }
 
     /*
@@ -89,10 +87,10 @@ public class JBossWSTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
-        assertTrue(errorLog.contains("<modify-wsdl-address>ttrue</modify-wsdl-address>"));
-        assertTrue(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
-        assertTrue(errorLog.contains("                  STRING"));
+        assertContains(errorLog, "OPVDX001: Validation error in standalone.xml");
+        assertContains(errorLog, "<modify-wsdl-address>ttrue</modify-wsdl-address>");
+        assertContains(errorLog, " ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was");
+        assertContains(errorLog, "                  STRING");
     }
 
     /*
@@ -118,10 +116,10 @@ public class JBossWSTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
-        assertTrue(errorLog.contains("^^^^ 'client-config' isn't an allowed element here"));
-        assertTrue(errorLog.contains("Elements allowed here are: endpoint-config, modify-wsdl-address,"));
-        assertTrue(errorLog.contains("wsdl-host, wsdl-port, wsdl-secure-port"));
+        assertContains(errorLog, "OPVDX001: Validation error in standalone.xml");
+        assertContains(errorLog, "^^^^ 'client-config' isn't an allowed element here");
+        assertContains(errorLog, "Elements allowed here are: endpoint-config, modify-wsdl-address,");
+        assertContains(errorLog, "wsdl-host, wsdl-port, wsdl-secure-port");
     }
 
 }

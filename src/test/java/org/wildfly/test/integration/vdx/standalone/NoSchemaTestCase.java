@@ -19,7 +19,9 @@ package org.wildfly.test.integration.vdx.standalone;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.wildfly.test.integration.vdx.TestBase;
@@ -33,8 +35,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -81,13 +81,13 @@ public class NoSchemaTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertFalse(errorLog.contains("OPVDX001: Validation error in standalone.xml"));
-        assertFalse(errorLog.contains("<modify-wsdl-address/>"));
-        assertFalse(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
-        assertFalse(errorLog.contains("|                  STRING"));
+        assertDoesNotContain(errorLog,"OPVDX001: Validation error in standalone.xml");
+        assertDoesNotContain(errorLog,"<modify-wsdl-address/>");
+        assertDoesNotContain(errorLog," ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was");
+        assertDoesNotContain(errorLog,"|                  STRING");
 
-        assertTrue(errorLog.contains("WFLYCTL0097"));
-        assertTrue(errorLog.contains("Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was STRING"));
+        assertContains(errorLog,"WFLYCTL0097");
+        assertContains(errorLog,"Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was STRING");
     }
 
 
@@ -102,7 +102,7 @@ public class NoSchemaTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String serverLog = String.join("\n", Files.readAllLines(container().getServerLogPath()));
-        assertTrue(serverLog.contains("OPVDX003: No schemas available"));
-        assertTrue(serverLog.contains("disabling validation error pretty printing"));
+        assertContains(serverLog, "OPVDX003: No schemas available");
+        assertContains(serverLog, "disabling validation error pretty printing");
     }
 }

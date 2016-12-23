@@ -17,8 +17,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * Created by rsvoboda on 12/14/16.
@@ -76,10 +74,10 @@ public class JBossWSStringReplaceTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("OPVDX001: Validation error in standalone-ws-broken.xml"));
-        assertTrue(errorLog.contains("<mmodify-wsdl-address>true</modify-wsdl-address>"));
-        assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
-        assertTrue(errorLog.contains("matching end-tag \"</mmodify-wsdl-address>"));
+        assertContains(errorLog, "OPVDX001: Validation error in standalone-ws-broken.xml");
+        assertContains(errorLog, "<mmodify-wsdl-address>true</modify-wsdl-address>");
+        assertContains(errorLog, "^^^^ 'mmodify-wsdl-address' isn't an allowed element here");
+        assertContains(errorLog, "matching end-tag \"</mmodify-wsdl-address>");
 
     }
 }

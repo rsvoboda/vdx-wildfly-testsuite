@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -65,6 +66,9 @@ public class TestBase {
 
     protected static void assertContains(String errorMessages, String expectedMessage) {
         assertTrue("log doesn't contain '" + expectedMessage + "'", errorMessages.contains(expectedMessage));
+    }
+    protected static void assertDoesNotContain(String errorMessages, String expectedMessage) {
+        assertFalse("log contains '" + expectedMessage + "'", errorMessages.contains(expectedMessage));
     }
 
     private void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {

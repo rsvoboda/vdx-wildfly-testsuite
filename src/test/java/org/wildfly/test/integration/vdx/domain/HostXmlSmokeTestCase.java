@@ -30,8 +30,6 @@ import org.wildfly.test.integration.vdx.category.DomainTests;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * Created by rsvoboda on 12/15/16.
@@ -52,8 +50,8 @@ public class HostXmlSmokeTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("^^^^ 'foo' isn't an allowed element here"));
-        assertTrue(errorLog.contains("Elements allowed here are: formatters, handlers, logger, server-logger"));
+        assertContains(errorLog, "^^^^ 'foo' isn't an allowed element here");
+        assertContains(errorLog, "Elements allowed here are: formatters, handlers, logger, server-logger");
     }
 
     private String addElementAndStart(Subtree subtree, String elementXml) throws Exception {
@@ -63,7 +61,7 @@ public class HostXmlSmokeTestCase extends TestBase {
                         .build()));
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("^^^^ '" + simpleXmlElement + "' isn't an allowed element here"));
+        assertContains(errorLog, "^^^^ '" + simpleXmlElement + "' isn't an allowed element here");
         return errorLog;
     }
 
@@ -71,51 +69,51 @@ public class HostXmlSmokeTestCase extends TestBase {
     @ServerConfig(configuration = "host.xml")
     public void appendElementInJvms() throws Exception {
         String errorLog = addElementAndStart( Subtree.jvms(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: jvm"));
+        assertContains(errorLog, "Elements allowed here are: jvm");
     }
 
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInServers() throws Exception {
         String errorLog = addElementAndStart( Subtree.servers(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: server"));
+        assertContains(errorLog, "Elements allowed here are: server");
     }
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInDC() throws Exception {
         String errorLog = addElementAndStart( Subtree.domainController(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: local, remote"));
+        assertContains(errorLog, "Elements allowed here are: local, remote");
     }
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInInterfaces() throws Exception {
         String errorLog = addElementAndStart( Subtree.interfaces(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: interface"));
+        assertContains(errorLog, "Elements allowed here are: interface");
     }
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInManagement() throws Exception {
         String errorLog = addElementAndStart( Subtree.management(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are:"));
-        assertTrue(errorLog.contains("audit-log"));
-        assertTrue(errorLog.contains("management-interfaces"));
-        assertTrue(errorLog.contains("configuration-changes"));
-        assertTrue(errorLog.contains("outbound-connections"));
-        assertTrue(errorLog.contains("identity"));
-        assertTrue(errorLog.contains("security-realms"));
+        assertContains(errorLog, "Elements allowed here are:");
+        assertContains(errorLog, "audit-log");
+        assertContains(errorLog, "management-interfaces");
+        assertContains(errorLog, "configuration-changes");
+        assertContains(errorLog, "outbound-connections");
+        assertContains(errorLog, "identity");
+        assertContains(errorLog, "security-realms");
 
     }
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInExtensions() throws Exception {
         String errorLog = addElementAndStart( Subtree.extensions(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: extension"));
+        assertContains(errorLog, "Elements allowed here are: extension");
     }
     @Test
     @ServerConfig(configuration = "host.xml")
     public void appendElementInProperties() throws Exception {
         String errorLog = addElementAndStart( Subtree.systemProperties(), simpleXml);
-        assertTrue(errorLog.contains("Elements allowed here are: property"));
+        assertContains(errorLog, "Elements allowed here are: property");
     }
 
 

@@ -26,8 +26,6 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.DomainTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * Created by rsvoboda on 12/15/16.
@@ -45,9 +43,9 @@ public class JBossWSDomainTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("<modify-wsdl-address/>"));
-        assertTrue(errorLog.contains(" ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was"));
-        assertTrue(errorLog.contains("                  STRING"));
+        assertContains(errorLog, "<modify-wsdl-address/>");
+        assertContains(errorLog, " ^^^^ Wrong type for 'modify-wsdl-address'. Expected [BOOLEAN] but was");
+        assertContains(errorLog, "                  STRING");
     }
 
     @Test
@@ -85,10 +83,10 @@ public class JBossWSDomainTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertTrue(errorLog.contains("<mmodify-wsdl-address>true</mmodify-wsdl-address>"));
-        assertTrue(errorLog.contains("^^^^ 'mmodify-wsdl-address' isn't an allowed element here"));
-        assertTrue(errorLog.contains(" Did you mean 'modify-wsdl-address'?"));
-        assertTrue(errorLog.contains("Elements allowed here are:"));
+        assertContains(errorLog, "<mmodify-wsdl-address>true</mmodify-wsdl-address>");
+        assertContains(errorLog, "^^^^ 'mmodify-wsdl-address' isn't an allowed element here");
+        assertContains(errorLog, " Did you mean 'modify-wsdl-address'?");
+        assertContains(errorLog, "Elements allowed here are:");
     }
 
     @Test

@@ -9,9 +9,6 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  *
  * Created by rsvoboda on 12/13/16.
@@ -33,44 +30,44 @@ public class MessagingTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertFalse(errorLog.contains("more)"));  // something like '(and 24 more)' shouldn't be in the log
-        assertTrue(errorLog.contains("<foo>bar</foo>"));
-        assertTrue(errorLog.contains("^^^^ 'foo' isn't an allowed element here"));
-        assertTrue(errorLog.contains("Elements allowed here are: "));
-        assertTrue(errorLog.contains("acceptor"));
-        assertTrue(errorLog.contains("address-setting"));
-        assertTrue(errorLog.contains("bindings-directory"));
-        assertTrue(errorLog.contains("bridge"));
-        assertTrue(errorLog.contains("broadcast-group"));
-        assertTrue(errorLog.contains("cluster-connection"));
-        assertTrue(errorLog.contains("connection-factory"));
-        assertTrue(errorLog.contains("connector"));
-        assertTrue(errorLog.contains("connector-service"));
-        assertTrue(errorLog.contains("discovery-group"));
-        assertTrue(errorLog.contains("divert"));
-        assertTrue(errorLog.contains("grouping-handler"));
-        assertTrue(errorLog.contains("http-acceptor"));
-        assertTrue(errorLog.contains("http-connector"));
-        assertTrue(errorLog.contains("in-vm-acceptor"));
-        assertTrue(errorLog.contains("in-vm-connector"));
-        assertTrue(errorLog.contains("jms-queue"));
-        assertTrue(errorLog.contains("jms-topic"));
-        assertTrue(errorLog.contains("journal-directory"));
-        assertTrue(errorLog.contains("large-messages-directory"));
-        assertTrue(errorLog.contains("legacy-connection-factory"));
-        assertTrue(errorLog.contains("live-only"));
-        assertTrue(errorLog.contains("paging-directory"));
-        assertTrue(errorLog.contains("pooled-connection-factory"));
-        assertTrue(errorLog.contains("queue"));
-        assertTrue(errorLog.contains("remote-acceptor"));
-        assertTrue(errorLog.contains("remote-connector"));
-        assertTrue(errorLog.contains("replication-colocated"));
-        assertTrue(errorLog.contains("replication-master"));
-        assertTrue(errorLog.contains("replication-slave"));
-        assertTrue(errorLog.contains("security-setting"));
-        assertTrue(errorLog.contains("shared-store-colocated"));
-        assertTrue(errorLog.contains("shared-store-master"));
-        assertTrue(errorLog.contains("shared-store-slave"));
+        assertDoesNotContain(errorLog,"more)");  // something like '(and 24 more)' shouldn't be in the log
+        assertContains(errorLog,"<foo>bar</foo>");
+        assertContains(errorLog,"^^^^ 'foo' isn't an allowed element here");
+        assertContains(errorLog,"Elements allowed here are: ");
+        assertContains(errorLog,"acceptor");
+        assertContains(errorLog,"address-setting");
+        assertContains(errorLog,"bindings-directory");
+        assertContains(errorLog,"bridge");
+        assertContains(errorLog,"broadcast-group");
+        assertContains(errorLog,"cluster-connection");
+        assertContains(errorLog,"connection-factory");
+        assertContains(errorLog,"connector");
+        assertContains(errorLog,"connector-service");
+        assertContains(errorLog,"discovery-group");
+        assertContains(errorLog,"divert");
+        assertContains(errorLog,"grouping-handler");
+        assertContains(errorLog,"http-acceptor");
+        assertContains(errorLog,"http-connector");
+        assertContains(errorLog,"in-vm-acceptor");
+        assertContains(errorLog,"in-vm-connector");
+        assertContains(errorLog,"jms-queue");
+        assertContains(errorLog,"jms-topic");
+        assertContains(errorLog,"journal-directory");
+        assertContains(errorLog,"large-messages-directory");
+        assertContains(errorLog,"legacy-connection-factory");
+        assertContains(errorLog,"live-only");
+        assertContains(errorLog,"paging-directory");
+        assertContains(errorLog,"pooled-connection-factory");
+        assertContains(errorLog,"queue");
+        assertContains(errorLog,"remote-acceptor");
+        assertContains(errorLog,"remote-connector");
+        assertContains(errorLog,"replication-colocated");
+        assertContains(errorLog,"replication-master");
+        assertContains(errorLog,"replication-slave");
+        assertContains(errorLog,"security-setting");
+        assertContains(errorLog,"shared-store-colocated");
+        assertContains(errorLog,"shared-store-master");
+        assertContains(errorLog,"shared-store-slave");
 
     }
 
