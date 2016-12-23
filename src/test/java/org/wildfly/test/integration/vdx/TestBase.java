@@ -49,7 +49,7 @@ public class TestBase {
     private Path testDirectory;
 
     public Server container() {
-        return ServerBase.getOrCreate(controller);
+        return ServerBase.getOrCreateServer(controller);
     }
 
     @Before public void setUp() {

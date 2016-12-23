@@ -83,6 +83,7 @@ public class ServerStandalone extends ServerBase {
         controller.stop(TestBase.STANDALONE_ARQUILLIAN_CONTAINER);
     }
 
+    @Override
     protected void copyLoggingPropertiesToConfiguration() throws Exception {
         String loggingPropertiesInResources = STANDALONE_RESOURCES_DIRECTORY + LOGGING_PROPERTIES_FILE_NAME;
         FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, STANDALONE_CONFIGURATION_PATH, true);

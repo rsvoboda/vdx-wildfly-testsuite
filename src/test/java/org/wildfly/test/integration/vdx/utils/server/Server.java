@@ -55,8 +55,6 @@ public interface Server {
 
     /**
      * Stops server.
-     *
-     * Not really useful for this testing but can be handy.
      */
     void stop();
 

@@ -51,6 +51,7 @@ public abstract class ServerBase implements Server {
         // backup config
         backupConfiguration();
 
+        // apply transformation(s)
         if (offlineCommands == null) {
             applyXmlTransformation();
         } else {
@@ -80,41 +81,36 @@ public abstract class ServerBase implements Server {
     @Override
     public abstract Path getServerLogPath();
 
-    @Override
-    public String getErrorMessageFromServerStart() throws Exception {
-        return String.join("\n", Files.readAllLines(Paths.get(ERRORS_LOG_FILE_NAME)));
-    }
-
     /**
-     * Creates instance of server. If -Ddomain=true system property is specified it will be domain server,
-     * otherwise standalone server will be used.
+     * Copies logging.properties which will log ERROR messages to target/errors.log file
      *
-     * @param controller arquillian container controller
-     * @return Server instance - standalone by default or domain if -Ddomain=true is set
+     * @throws Exception when copy fails
      */
-    public static Server getOrCreate(ContainerController controller) {
-        if (server == null) {
-            if (Server.isDomain()) {
-                server = new ServerDomain(controller);
-            } else {
-                server = new ServerStandalone(controller);
-            }
-        }
-        return server;
-    }
-
+    protected abstract void copyLoggingPropertiesToConfiguration() throws Exception;
 
     /**
-     * This will copy file from resources directory to $JBOSS_HOME/<profile>/configuration directory and only if
-     * this file does not exist in this configuration directory.
-     * <p>
-     * This never overrides existing files.
+     * This will copy config file from resources directory to configuration directory of application server
+     * This never overrides existing files, so the file with the same name in configuration directory of server has precedence
      *
      * @throws Exception when copy operation
      */
     protected abstract void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception;
 
+    protected abstract OfflineManagementClient getOfflineManagementClient() throws Exception;
+
     protected abstract void startServer() throws Exception;
+
+    @Override
+    public String getErrorMessageFromServerStart() throws Exception {
+        return String.join("\n", Files.readAllLines(Paths.get(ERRORS_LOG_FILE_NAME)));
+    }
+
+    private void backupConfiguration() throws Exception {
+        // destroy any existing backup config
+        getOfflineManagementClient().apply(configurationFileBackup.destroy());
+        // backup any existing config
+        getOfflineManagementClient().apply(configurationFileBackup.backup());
+    }
 
     private void restoreConfigIfBackupExists() throws Exception {
         if (configurationFileBackup == null) {
@@ -125,28 +121,10 @@ public abstract class ServerBase implements Server {
         getOfflineManagementClient().apply(configurationFileBackup.restore());
     }
 
-    protected abstract OfflineManagementClient getOfflineManagementClient() throws Exception;
-
-    private void backupConfiguration() throws Exception {
-        // destroy any existing backup config
-        getOfflineManagementClient().apply(configurationFileBackup.destroy());
-        // backup any existing config
-        getOfflineManagementClient().apply(configurationFileBackup.backup());
-    }
-
     /**
-     * Copies logging.properties which will log ERROR messages to target/errors.log file
+     * Damages xml config file only if config file has valid syntax. This relies on well-formed xml.
      *
-     * @throws Exception when copy fails
-     */
-    protected abstract void copyLoggingPropertiesToConfiguration() throws Exception;
-
-    /**
-     * Damages xml config file only if config file had valid syntax. It cannot damaged invalid xml file.
-     * <p>
-     * IT THROWS EXCEPTION IF CONFIG FILE IS NOT XML VALID.
-     *
-     * @throws Exception if file not xml valid
+     * @throws Exception if not valid xml transformation
      */
     @SuppressWarnings("deprecation")
     private void applyXmlTransformation() throws Exception {
@@ -211,6 +189,24 @@ public abstract class ServerBase implements Server {
             }
         }
         return serverConfig;
+    }
+
+    /**
+     * Creates instance of server. If -Ddomain=true system property is specified it will be domain server,
+     * otherwise standalone server will be used.
+     *
+     * @param controller arquillian container controller
+     * @return Server instance - standalone by default or domain if -Ddomain=true is set
+     */
+    public static Server getOrCreateServer(ContainerController controller) {
+        if (server == null) {
+            if (Server.isDomain()) {
+                server = new ServerDomain(controller);
+            } else {
+                server = new ServerStandalone(controller);
+            }
+        }
+        return server;
     }
 
 

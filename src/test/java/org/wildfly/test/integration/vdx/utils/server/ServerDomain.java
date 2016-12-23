@@ -90,11 +90,7 @@ public class ServerDomain extends ServerBase {
         controller.stop(TestBase.DOMAIN_ARQUILLIAN_CONTAINER);
     }
 
-    /**
-     * Copies logging.properties which will log ERROR messages to target/errors.log file
-     *
-     * @throws Exception
-     */
+    @Override
     protected void copyLoggingPropertiesToConfiguration() throws Exception {
         String loggingPropertiesInResources = DOMAIN_RESOURCES_DIRECTORY + LOGGING_PROPERTIES_FILE_NAME;
         FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, DOMAIN_CONFIGURATION_PATH, true);
