@@ -20,7 +20,6 @@ package org.wildfly.test.integration.vdx;
 import org.jboss.arquillian.container.test.api.ContainerController;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -31,9 +30,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Do not inherit from this class as it's common for standalone and domain tests! For standalone tests inherit from
@@ -53,47 +51,20 @@ public class TestBase {
         return AbstractServer.getOrCreate(controller);
     }
 
-    /**
-     * Asserts that error message from server contains all regular expressions. If one fails then test fails.
-     * This is useful because it can provide exact place where the pattern does not match.
-     *
-     * @param regexs       list of regular expressions
-     * @param errorMessage error message
-     */
-    protected void assertExpectedError(List<String> regexs, String errorMessage) {
-        for (String regex : regexs) {
-            assertExpectedError(regex, errorMessage);
-        }
-    }
-
-    /**
-     * Asserts that error message from server contains regular expression. Fails test if it does not contain it.
-     *
-     * @param regex        regular expression
-     * @param errorMessage error message
-     */
-    protected void assertExpectedError(String regex, String errorMessage) {
-        Pattern expectedError = Pattern.compile(regex, Pattern.DOTALL);
-        Matcher matcher = expectedError.matcher(errorMessage);
-        Assert.assertTrue("Error log message does not match the pattern. Failing the test. \n"
-                + "########################## Pattern ##############################\n" + expectedError.toString() + " \n"
-                + "########################## Error log ##############################\n" + errorMessage + " \n"
-                + "########################################################\n"
-                + "########################################################\n", matcher.matches());
-    }
-
     @Before public void setUp() {
-        System.out.println(
-                "----------------------------------------- Start " + this.getClass().getSimpleName() + " - " + testName
-                        .getMethodName() + " -----------------------------------------");
+        System.out.println("----------------------------------------- Start " +
+                this.getClass().getSimpleName() + " - " + testName.getMethodName() + " -----------------------------------------");
         testDirectory = Paths.get("target", "server-logs", this.getClass().getSimpleName(), testName.getMethodName());
     }
 
     @After public void tearDown() throws Exception {
-        System.out.println(
-                "----------------------------------------- Stop " + this.getClass().getSimpleName() + " - " + testName
-                        .getMethodName() + " -----------------------------------------");
+        System.out.println("----------------------------------------- Stop " +
+                this.getClass().getSimpleName() + " - " + testName.getMethodName() + " -----------------------------------------");
         archiveServerLogAndDeleteIt(testDirectory);
+    }
+
+    protected static void assertContains(String errorMessages, String expectedMessage) {
+        assertTrue("log doesn't contain '" + expectedMessage + "'", errorMessages.contains(expectedMessage));
     }
 
     private void archiveServerLogAndDeleteIt(Path pathToArchiveDirectory) throws Exception {

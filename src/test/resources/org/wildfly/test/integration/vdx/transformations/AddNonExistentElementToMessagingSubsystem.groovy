@@ -1,4 +1,4 @@
-root.profile.subsystem.server.cluster.replaceNode{
+messaging.server.cluster.replaceNode{
     cluster(id:"3"){
     }
 }
