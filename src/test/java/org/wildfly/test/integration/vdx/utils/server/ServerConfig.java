@@ -50,8 +50,6 @@ import java.lang.annotation.Target;
      */
     String hostConfig() default "host.xml";
 
-    @Deprecated Class xmlTransformationClass() default DoNothing.class;
-
     String xmlTransformationGroovy() default "";
 
     //for things like subtree("webservices", Subtree.subsystemInProfile("profileXY", "webservices")).build());
