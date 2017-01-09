@@ -131,11 +131,8 @@ public abstract class ServerBase implements Server {
         ServerConfig serverConfig = getServerConfig();
 
         if (serverConfig.xmlTransformationGroovy().equals("")) {
-            if (DoNothing.class.equals(serverConfig.xmlTransformationClass())) {
-                return;
-            }
 
-            getOfflineManagementClient().apply(GroovyXmlTransform.of(serverConfig.xmlTransformationClass()).build());
+            // skip as no transformation is needed - e.g. using prepared configuration
 
         } else {
 
