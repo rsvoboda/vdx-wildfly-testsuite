@@ -1,6 +1,7 @@
 # vdx-wildfly-testsuite
 Testsuite for projectodd/vdx [https://github.com/projectodd/vdx/] pretty print feature in WildFly
 
+[![Build Status](https://travis-ci.org/jboss-eap-qe/vdx-wildfly-testsuite.svg?branch=master)](https://travis-ci.org/jboss-eap-qe/vdx-wildfly-testsuite)
 
 Running the Testsuite
 -------------------
@@ -37,4 +38,27 @@ To run test against application server running in domain mode:
 
 `-Ddomain` is hint to use correct `wildfly-arquillian-container` artifact
 
-Of course you can specify conctere test not just whole TestCase class - for example `JBossWSTestCase#incorrectValueOfModifyWsdlAddressElement`
+Of course you can specify concrere test not just whole TestCase class - for example `JBossWSTestCase#incorrectValueOfModifyWsdlAddressElement`
+
+
+Used technologies
+-----------------
+
+JDK 8 (https://docs.oracle.com/javase/8)
+ 
+Apache Maven 3.2.5 (https://maven.apache.org)
+
+Creaper (https://github.com/wildfly-extras/creaper/)
+
+Arquillian (http://arquillian.org/)
+
+JUnit (http://junit.org/junit4/)
+
+Groovy (http://www.groovy-lang.org/)
+
+
+Travis CI
+---------
+
+There is Travis CI configured to test PRs. 
+  	    
