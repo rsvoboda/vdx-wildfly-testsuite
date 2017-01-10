@@ -1,0 +1,18 @@
+install:
+ - mvn clean
+script:
+ - mvn -B -Pall test -Djboss.home=./wildfly-11.0.0.Alpha1-SNAPSHOT
+language: java
+jdk:
+  - oraclejdk8
+env:
+  - JBOSS_HOME=./wildfly-11.0.0.Alpha1-SNAPSHOT
+cache:
+ directories:
+  - $HOME/.m2
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+before_install:
+- "wget --no-check-certificate https://ci.wildfly.org/guestAuth/repository/download/WF_Nightly/latest.lastFinished/wildfly-11.0.0.Alpha1-SNAPSHOT.zip && unzip wildfly-11.0.0.Alpha1-SNAPSHOT.zip"
