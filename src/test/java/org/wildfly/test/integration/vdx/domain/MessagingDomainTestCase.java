@@ -15,7 +15,7 @@
  *
  */
 
-package org.wildfly.test.integration.vdx.standalone;
+package org.wildfly.test.integration.vdx.domain;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -26,76 +26,25 @@ import org.wildfly.extras.creaper.commands.foundation.offline.xml.GroovyXmlTrans
 import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
 import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.test.integration.vdx.TestBase;
-import org.wildfly.test.integration.vdx.category.StandaloneTests;
+import org.wildfly.test.integration.vdx.category.DomainTests;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 /**
- * Created by rsvoboda on 12/13/16.
+ * Created by mnovak on 1/19/17.
  */
 
 @RunAsClient
 @RunWith(Arquillian.class)
-@Category(StandaloneTests.class)
-public class MessagingTestCase extends TestBase {
-
-    /*
-     * append invalid element to subsystem definition
-     * check that all elements are listed
-     */
-    @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml", xmlTransformationGroovy = "messaging/AddFooBar.groovy",
-            subtreeName = "messaging", subsystemName = "messaging-activemq")
-    public void modifyWsdlAddressElementWithNoValue() throws Exception {
-        container().tryStartAndWaitForFail();
-
-        String errorLog = container().getErrorMessageFromServerStart();
-        assertDoesNotContain(errorLog, "more)");  // something like '(and 24 more)' shouldn't be in the log
-        assertContains(errorLog, "<foo>bar</foo>");
-        assertContains(errorLog, "^^^^ 'foo' isn't an allowed element here");
-        assertContains(errorLog, "Elements allowed here are: ");
-        assertContains(errorLog, "acceptor");
-        assertContains(errorLog, "address-setting");
-        assertContains(errorLog, "bindings-directory");
-        assertContains(errorLog, "bridge");
-        assertContains(errorLog, "broadcast-group");
-        assertContains(errorLog, "cluster-connection");
-        assertContains(errorLog, "connection-factory");
-        assertContains(errorLog, "connector");
-        assertContains(errorLog, "connector-service");
-        assertContains(errorLog, "discovery-group");
-        assertContains(errorLog, "divert");
-        assertContains(errorLog, "grouping-handler");
-        assertContains(errorLog, "http-acceptor");
-        assertContains(errorLog, "http-connector");
-        assertContains(errorLog, "in-vm-acceptor");
-        assertContains(errorLog, "in-vm-connector");
-        assertContains(errorLog, "jms-queue");
-        assertContains(errorLog, "jms-topic");
-        assertContains(errorLog, "journal-directory");
-        assertContains(errorLog, "large-messages-directory");
-        assertContains(errorLog, "legacy-connection-factory");
-        assertContains(errorLog, "live-only");
-        assertContains(errorLog, "paging-directory");
-        assertContains(errorLog, "pooled-connection-factory");
-        assertContains(errorLog, "queue");
-        assertContains(errorLog, "remote-acceptor");
-        assertContains(errorLog, "remote-connector");
-        assertContains(errorLog, "replication-colocated");
-        assertContains(errorLog, "replication-master");
-        assertContains(errorLog, "replication-slave");
-        assertContains(errorLog, "security-setting");
-        assertContains(errorLog, "shared-store-colocated");
-        assertContains(errorLog, "shared-store-master");
-        assertContains(errorLog, "shared-store-slave");
-    }
+@Category(DomainTests.class)
+public class MessagingDomainTestCase extends TestBase {
 
     /*
     * provide invalid value to address-full-policy which is enum - only allowed are PAGE,BLOCK,FAIL,DROP, try to use "PAGES"
     */
     @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml", xmlTransformationGroovy = "messaging/InvalidAddressSettingFullPolicy.groovy",
-            subtreeName = "messaging", subsystemName = "messaging-activemq")
+    @ServerConfig(configuration = "domain.xml", xmlTransformationGroovy = "messaging/InvalidAddressSettingFullPolicy.groovy",
+            subtreeName = "messaging", subsystemName = "messaging-activemq", profileName = "full-ha")
     public void testInvalidEnumValueInAddressSettingsFullPolicy() throws Exception {
         container().tryStartAndWaitForFail();
         String errorLog = container().getErrorMessageFromServerStart();
@@ -108,14 +57,16 @@ public class MessagingTestCase extends TestBase {
     * provide invalid type to server-id to in-vm-acceptor - put string to int
     */
     @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml")
+    @ServerConfig(configuration = "domain.xml", profileName = "full-ha")
     public void testInvalidTypeForServerIdInAcceptor() throws Exception {
         container().tryStartAndWaitForFail(
-                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class, "messaging/InvalidTypeForServerIdInAcceptor.groovy")
-                        .subtree("messaging", Subtree.subsystem("messaging-activemq")).parameter("parameter", "not-int-value")
+                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class,
+                        "messaging/InvalidTypeForServerIdInAcceptor.groovy")
+                        .subtree("messaging", Subtree.subsystemInProfile("full-ha", "messaging-activemq"))
+                        .parameter("parameter", "not-int-value")
                         .build()));
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
+        assertContains(errorLog, "OPVDX001: Validation error in domain.xml ---------------------------");
         assertContains(errorLog, "<in-vm-acceptor name=\"in-vm\" server-id=\"not-int-value\"/>");
         assertContains(errorLog, "^^^^ Wrong type for 'server-id'. Expected [INT] but was STRING. Couldn't");
         assertContains(errorLog, "convert \\\"not-int-value\\\" to [INT]");
@@ -125,14 +76,16 @@ public class MessagingTestCase extends TestBase {
     * provide invalid type to server-id to in-vm-acceptor - put long to int
     */
     @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml")
+    @ServerConfig(configuration = "domain.xml", profileName = "full-ha")
     public void testLongInIntServerIdInAcceptor() throws Exception {
         container().tryStartAndWaitForFail(
-                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class, "messaging/InvalidTypeForServerIdInAcceptor.groovy")
-                        .subtree("messaging", Subtree.subsystem("messaging-activemq")).parameter("parameter", "214748364700")
+                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class,
+                        "messaging/InvalidTypeForServerIdInAcceptor.groovy")
+                        .subtree("messaging", Subtree.subsystemInProfile("full-ha", "messaging-activemq"))
+                        .parameter("parameter", "214748364700")
                         .build()));
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
+        assertContains(errorLog, "OPVDX001: Validation error in domain.xml ---------------------------");
         assertContains(errorLog, "<in-vm-acceptor name=\"in-vm\" server-id=\"214748364700\"/>");
         assertContains(errorLog, "^^^^ Wrong type for 'server-id'. Expected [INT] but was STRING. Couldn't");
         assertContains(errorLog, "convert \\\"214748364700\\\" to [INT]");
@@ -142,16 +95,16 @@ public class MessagingTestCase extends TestBase {
     * provide invalid type - too long value to long type
     */
     @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml")
+    @ServerConfig(configuration = "domain.xml", profileName = "full-ha")
     public void testTooLongValueForLongTypeInMaxSizeBytes() throws Exception {
         container().tryStartAndWaitForFail(
                 (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class,
                         "messaging/InvalidValueForMaxSizeBytesInAddressSettings.groovy")
-                        .subtree("messaging", Subtree.subsystem("messaging-activemq"))
+                        .subtree("messaging", Subtree.subsystemInProfile("full-ha", "messaging-activemq"))
                         .parameter("parameter", "1048576000000000000000000000000000000000")
                         .build()));
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml");
+        assertContains(errorLog, "OPVDX001: Validation error in domain.xml");
         assertContains(errorLog, "<address-setting name=\"#\" dead-letter-address=\"jms.queue.DLQ\" " +
                 "expiry-address=\"jms.queue.ExpiryQueue\" max-size-bytes=\"1048576000000000000000000000000000000000\" " +
                 "page-size-bytes=\"2097152\" message-counter-history-day-limit=\"10\" redistribution-delay=\"1000\" " +
@@ -165,15 +118,15 @@ public class MessagingTestCase extends TestBase {
     * provide invalid type - test double in long
     */
     @Test
-    @ServerConfig(configuration = "standalone-full-ha.xml")
+    @ServerConfig(configuration = "domain.xml")
     public void testDoubleInLongTypeInMaxSizeBytes() throws Exception {
         container().tryStartAndWaitForFail(
                 (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class,
                         "messaging/InvalidValueForMaxSizeBytesInAddressSettings.groovy")
-                        .subtree("messaging", Subtree.subsystem("messaging-activemq")).parameter("parameter", "0.12345678")
+                        .subtree("messaging", Subtree.subsystemInProfile("full-ha", "messaging-activemq")).parameter("parameter", "0.12345678")
                         .build()));
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
+        assertContains(errorLog, "OPVDX001: Validation error in domain.xml ---------------------------");
         assertContains(errorLog, "<address-setting name=\"#\" dead-letter-address=\"jms.queue.DLQ\" " +
                 "expiry-address=\"jms.queue.ExpiryQueue\" max-size-bytes=\"0.12345678\" page-size-bytes=\"2097152\" " +
                 "message-counter-history-day-limit=\"10\" redistribution-delay=\"1000\" address-full-policy=\"PAGE\"/>");
