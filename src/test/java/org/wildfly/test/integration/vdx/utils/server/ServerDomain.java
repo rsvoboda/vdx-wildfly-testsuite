@@ -28,6 +28,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +58,12 @@ public class ServerDomain extends ServerBase {
             containerProperties.put("hostConfig", DEFAULT_HOST_CONFIG);
         }
         controller.start(TestBase.DOMAIN_ARQUILLIAN_CONTAINER, containerProperties);
+    }
+
+    @Override
+    public void archiveModifiedUsedConfig() throws Exception {
+        Files.copy(Paths.get(DOMAIN_CONFIGURATION_PATH.toString(), getServerConfig().configuration()),
+                Paths.get(testArchiveDirectory.toString(), getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override

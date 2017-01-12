@@ -69,4 +69,6 @@ public interface Server {
     Path getServerLogPath();
 
     String getErrorMessageFromServerStart() throws Exception;
+
+    void setTestArchiveDirectory(Path testArchiveDirectory);
 }

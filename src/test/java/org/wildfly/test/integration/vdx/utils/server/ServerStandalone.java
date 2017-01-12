@@ -28,13 +28,11 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerStandalone extends ServerBase {
-
-//    private static final String DEFAULT_VM_ARGUMENTS = "-server -Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m " +
-//            "-Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true";
 
     private ContainerController controller;
 
@@ -47,8 +45,6 @@ public class ServerStandalone extends ServerBase {
         Map<String, String> containerProperties = new HashMap<>();
         if (serverConfig != null) {
             containerProperties.put("serverConfig", serverConfig.configuration());
-            //containerProperties.put("vmArguments", DEFAULT_VM_ARGUMENTS.concat(" -Djboss.server.log.dir=" + logDirectory));
-            // apply xml transformation defined in ServerConfig
         } else { // if no server config was specified return arquillian to default
             containerProperties.put("serverConfig", DEFAULT_SERVER_CONFIG);
         }
@@ -63,6 +59,12 @@ public class ServerStandalone extends ServerBase {
                 .rootDirectory(new File(JBOSS_HOME))
                 .configurationFile(getServerConfig() == null ? DEFAULT_SERVER_CONFIG : getServerConfig().configuration())
                 .build());
+    }
+
+    @Override
+    protected void archiveModifiedUsedConfig() throws Exception {
+        Files.copy(Paths.get(STANDALONE_CONFIGURATION_PATH.toString(), getServerConfig().configuration()),
+                Paths.get(testArchiveDirectory.toString(), getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
