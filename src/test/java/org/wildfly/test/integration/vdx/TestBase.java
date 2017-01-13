@@ -46,27 +46,33 @@ public class TestBase {
 
     @Rule public TestName testName = new TestName();
 
-    private Path testDirectory;
+    /*
+    * Path to root directory where server.log and xml configuration for each test is archived
+    */
+    private Path testArchiveDirectory;
 
     public Server container() {
         return ServerBase.getOrCreateServer(controller);
     }
 
-    @Before public void setUp() {
+    @Before public void setUp() throws Exception {
         System.out.println("----------------------------------------- Start " +
                 this.getClass().getSimpleName() + " - " + testName.getMethodName() + " -----------------------------------------");
-        testDirectory = Paths.get("target", "server-logs", this.getClass().getSimpleName(), testName.getMethodName());
+
+        testArchiveDirectory = Paths.get("target", "test-output", this.getClass().getSimpleName(), testName.getMethodName());
+        createAndSetTestArchiveDirectoryToContainer(testArchiveDirectory);
     }
 
     @After public void tearDown() throws Exception {
         System.out.println("----------------------------------------- Stop " +
                 this.getClass().getSimpleName() + " - " + testName.getMethodName() + " -----------------------------------------");
-        archiveServerLogAndDeleteIt(testDirectory);
+        archiveServerLogAndDeleteIt(testArchiveDirectory);
     }
 
     protected static void assertContains(String errorMessages, String expectedMessage) {
         assertTrue("log doesn't contain '" + expectedMessage + "'", errorMessages.contains(expectedMessage));
     }
+
     protected static void assertDoesNotContain(String errorMessages, String expectedMessage) {
         assertFalse("log contains '" + expectedMessage + "'", errorMessages.contains(expectedMessage));
     }
@@ -78,12 +84,16 @@ public class TestBase {
             return;
         }
 
-        // create directory with name of the test in target directory
-        if (Files.notExists(pathToArchiveDirectory)) {
-            Files.createDirectories(pathToArchiveDirectory);
-        }
         // copy server.log files for standalone or host-controller.log for domain
         Files.copy(container().getServerLogPath(), pathToArchiveDirectory.resolve(container().getServerLogPath().getFileName()), StandardCopyOption.REPLACE_EXISTING);
         Files.delete(container().getServerLogPath());
+    }
+
+    private void createAndSetTestArchiveDirectoryToContainer(Path testArchiveDirectory) throws Exception {
+        // create directory with name of the test in target directory
+        if (Files.notExists(testArchiveDirectory)) {
+            Files.createDirectories(testArchiveDirectory);
+        }
+        container().setTestArchiveDirectory(testArchiveDirectory);
     }
 }

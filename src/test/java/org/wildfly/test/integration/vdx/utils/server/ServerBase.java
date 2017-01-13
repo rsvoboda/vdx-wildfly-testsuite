@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 
 public abstract class ServerBase implements Server {
 
+    protected Path testArchiveDirectory = null;
     private ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
     private static Server server = null;
 
@@ -58,6 +59,9 @@ public abstract class ServerBase implements Server {
             getOfflineManagementClient().apply(offlineCommands);
         }
 
+        // archive configuration used during server start
+        archiveModifiedUsedConfig();
+
         try {
             // tryStartAndWaitForFail - this must throw exception due invalid xml
             startServer();
@@ -68,6 +72,7 @@ public abstract class ServerBase implements Server {
         } catch (Exception ex) {
             System.out.println("Start of the server failed. This is expected.");
         } finally {
+
             // restore original config if it exists
             restoreConfigIfBackupExists();
         }
@@ -95,6 +100,8 @@ public abstract class ServerBase implements Server {
      * @throws Exception when copy operation
      */
     protected abstract void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception;
+
+    protected abstract void archiveModifiedUsedConfig() throws Exception;
 
     protected abstract OfflineManagementClient getOfflineManagementClient() throws Exception;
 
@@ -153,7 +160,7 @@ public abstract class ServerBase implements Server {
             } else {  // domain case with subtree
                 getOfflineManagementClient()
                         .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
-                                .subtree(serverConfig.subtreeName(),Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
+                                .subtree(serverConfig.subtreeName(), Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
                                 .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
                                 .build());
 
@@ -206,5 +213,8 @@ public abstract class ServerBase implements Server {
         return server;
     }
 
-
+    @Override
+    public void setTestArchiveDirectory(Path testArchiveDirectory) {
+        this.testArchiveDirectory = testArchiveDirectory;
+    }
 }
