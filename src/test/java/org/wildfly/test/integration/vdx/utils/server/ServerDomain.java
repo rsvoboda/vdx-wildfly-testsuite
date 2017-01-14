@@ -61,25 +61,19 @@ public class ServerDomain extends ServerBase {
     }
 
     @Override
-    public void archiveModifiedUsedConfig() throws Exception {
-        Files.copy(Paths.get(DOMAIN_CONFIGURATION_PATH.toString(), getServerConfig().configuration()),
-                Paths.get(testArchiveDirectory.toString(), getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    @Override
     public Path getServerLogPath() {
-        return Paths.get(JBOSS_HOME, DOMAIN_DIRECTORY, "log", "host-controller.log");
+        return Paths.get(JBOSS_HOME, SERVER_MODE, "log", "host-controller.log");
     }
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (Files.notExists(Paths.get(DOMAIN_CONFIGURATION_PATH.toString(), getServerConfig().configuration()))) {
-            FileUtils.copyFileFromResourcesToServer(DOMAIN_RESOURCES_DIRECTORY + getServerConfig().configuration(),
-                    DOMAIN_CONFIGURATION_PATH, false);
+        if (Files.notExists(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().configuration()))) {
+            FileUtils.copyFileFromResourcesToServer(RESOURCES_DIRECTORY + getServerConfig().configuration(),
+                    CONFIGURATION_PATH, false);
         }
-        if (Files.notExists(Paths.get(DOMAIN_CONFIGURATION_PATH.toString(), getServerConfig().hostConfig()))) {
-            FileUtils.copyFileFromResourcesToServer(DOMAIN_RESOURCES_DIRECTORY + getServerConfig().hostConfig(),
-                    DOMAIN_CONFIGURATION_PATH, false);
+        if (Files.notExists(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().hostConfig()))) {
+            FileUtils.copyFileFromResourcesToServer(RESOURCES_DIRECTORY + getServerConfig().hostConfig(),
+                    CONFIGURATION_PATH, false);
         }
     }
 
@@ -97,9 +91,4 @@ public class ServerDomain extends ServerBase {
         controller.stop(TestBase.DOMAIN_ARQUILLIAN_CONTAINER);
     }
 
-    @Override
-    protected void copyLoggingPropertiesToConfiguration() throws Exception {
-        String loggingPropertiesInResources = DOMAIN_RESOURCES_DIRECTORY + LOGGING_PROPERTIES_FILE_NAME;
-        FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, DOMAIN_CONFIGURATION_PATH, true);
-    }
 }

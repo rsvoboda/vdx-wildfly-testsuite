@@ -26,17 +26,13 @@ import java.nio.file.Paths;
 public interface Server {
 
     String JBOSS_HOME = System.getProperty("jboss.home", "jboss-as");
-    String DEFAULT_SERVER_CONFIG = isDomain() ? "domain.xml" : "standalone.xml";
+    String SERVER_MODE = isDomain() ? "domain" : "standalone";
+
+    String DEFAULT_SERVER_CONFIG = SERVER_MODE + ".xml"; // domain.xml or standalone.xml
     String DEFAULT_HOST_CONFIG = "host.xml";
 
-    String STANDALONE_DIRECTORY = "standalone";
-    String DOMAIN_DIRECTORY = "domain";
-
-    Path STANDALONE_CONFIGURATION_PATH = Paths.get(Server.JBOSS_HOME, STANDALONE_DIRECTORY, "configuration");
-    Path DOMAIN_CONFIGURATION_PATH = Paths.get(Server.JBOSS_HOME, DOMAIN_DIRECTORY, "configuration");
-
-    String STANDALONE_RESOURCES_DIRECTORY = "configurations" + File.separator + "standalone" + File.separator;
-    String DOMAIN_RESOURCES_DIRECTORY = "configurations" + File.separator + "domain" + File.separator;
+    Path CONFIGURATION_PATH = Paths.get(JBOSS_HOME, SERVER_MODE, "configuration");
+    String RESOURCES_DIRECTORY = "configurations" + File.separator + SERVER_MODE + File.separator;
 
     String LOGGING_PROPERTIES_FILE_NAME = "logging.properties";
     String ERRORS_LOG_FILE_NAME = "target/errors.log";
