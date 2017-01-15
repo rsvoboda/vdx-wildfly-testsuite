@@ -50,7 +50,10 @@ public abstract class ServerBase implements Server {
         copyConfigFilesFromResourcesIfItDoesNotExist();
 
         // backup config
-        backupConfiguration();
+        boolean backupConfig = getServerConfig() == null ? true : getServerConfig().backupConfiguration();
+        if (backupConfig) {
+            backupConfiguration();
+        }
 
         // apply transformation(s)
         if (offlineCommands == null) {
@@ -74,7 +77,9 @@ public abstract class ServerBase implements Server {
         } finally {
 
             // restore original config if it exists
-            restoreConfigIfBackupExists();
+            if (backupConfig) {
+                restoreConfigIfBackupExists();
+            }
         }
     }
 

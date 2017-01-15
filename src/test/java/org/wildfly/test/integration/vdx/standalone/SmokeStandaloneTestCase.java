@@ -26,6 +26,8 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
+import java.nio.file.Files;
+
 /**
  * Smoke test case - it tests whether Wildlfy/EAP test automation is working and basic VDX functionality.
  */
@@ -76,5 +78,13 @@ public class SmokeStandaloneTestCase extends TestBase {
         assertContains(errorMessages, "| 'id' is allowed on elements:");
         assertContains(errorMessages, "resource-adapters > resource-adapter");
         assertContains(errorMessages, "resource-adapters > resource-adapter > module");
+    }
+
+    @Test
+    @ServerConfig(configuration = "empty.xml", backupConfiguration = false)
+    public void emptyConfigFile() throws Exception {
+        container().tryStartAndWaitForFail();
+        assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
+                "OPVDX002: Failed to pretty print validation error: Index: 0, Size: 0");
     }
 }
