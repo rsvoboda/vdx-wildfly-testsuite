@@ -25,11 +25,13 @@ import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
 import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.extras.creaper.core.offline.OfflineManagementClient;
 import org.wildfly.test.integration.vdx.transformations.DoNothing;
+import org.wildfly.test.integration.vdx.utils.FileUtils;
 
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public abstract class ServerBase implements Server {
 
@@ -87,11 +89,15 @@ public abstract class ServerBase implements Server {
     public abstract Path getServerLogPath();
 
     /**
-     * Copies logging.properties which will log ERROR messages to target/errors.log file
+     * Copies custom logging.properties to server configuration.
+     * This will log ERROR messages to target/errors.log file
      *
      * @throws Exception when copy fails
      */
-    protected abstract void copyLoggingPropertiesToConfiguration() throws Exception;
+    protected void copyLoggingPropertiesToConfiguration() throws Exception {
+        String loggingPropertiesInResources = RESOURCES_DIRECTORY + LOGGING_PROPERTIES_FILE_NAME;
+        FileUtils.copyFileFromResourcesToServer(loggingPropertiesInResources, CONFIGURATION_PATH, true);
+    }
 
     /**
      * This will copy config file from resources directory to configuration directory of application server
@@ -100,8 +106,6 @@ public abstract class ServerBase implements Server {
      * @throws Exception when copy operation
      */
     protected abstract void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception;
-
-    protected abstract void archiveModifiedUsedConfig() throws Exception;
 
     protected abstract OfflineManagementClient getOfflineManagementClient() throws Exception;
 
@@ -126,6 +130,11 @@ public abstract class ServerBase implements Server {
         }
         System.out.println("Restoring server configuration. Configuration to be restored " + getServerConfig());
         getOfflineManagementClient().apply(configurationFileBackup.restore());
+    }
+
+    private void archiveModifiedUsedConfig() throws Exception {
+        Files.copy(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().configuration()),
+                Paths.get(testArchiveDirectory.toString(), getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
