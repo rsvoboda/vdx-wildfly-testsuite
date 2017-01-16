@@ -26,6 +26,8 @@ import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.DomainTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
+import java.nio.file.Files;
+
 import static org.wildfly.test.integration.vdx.standalone.SmokeStandaloneTestCase.*;
 
 /**
@@ -56,5 +58,21 @@ public class SmokeDomainTestCase extends TestBase {
     public void addNonExistingElementToMessagingSubsystem() throws Exception {
         container().tryStartAndWaitForFail();
         ensureNonExistingElementToMessagingSubsystem(container().getErrorMessageFromServerStart());
+    }
+
+    @Test
+    @ServerConfig(configuration = "empty.xml", backupConfiguration = false)
+    public void emptyDCConfigFile() throws Exception {
+        container().tryStartAndWaitForFail();
+        assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
+                "OPVDX002: Failed to pretty print validation error: Index: 0, Size: 0");
+    }
+
+    @Test
+    @ServerConfig(configuration = "domain.xml", hostConfig = "empty.xml", backupConfiguration = false)
+    public void emptyHCConfigFile() throws Exception {
+        container().tryStartAndWaitForFail();
+        assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
+                "OPVDX002: Failed to pretty print validation error: Index: 0, Size: 0");
     }
 }
