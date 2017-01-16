@@ -61,7 +61,7 @@ public class SmokeDomainTestCase extends TestBase {
     }
 
     @Test
-    @ServerConfig(configuration = "empty.xml", backupConfiguration = false)
+    @ServerConfig(configuration = "empty.xml")
     public void emptyDCConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
@@ -69,7 +69,7 @@ public class SmokeDomainTestCase extends TestBase {
     }
 
     @Test
-    @ServerConfig(configuration = "domain.xml", hostConfig = "empty.xml", backupConfiguration = false)
+    @ServerConfig(configuration = "domain.xml", hostConfig = "empty.xml")
     public void emptyHCConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
