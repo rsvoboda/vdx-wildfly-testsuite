@@ -81,7 +81,7 @@ public class SmokeStandaloneTestCase extends TestBase {
     }
 
     @Test
-    @ServerConfig(configuration = "empty.xml", backupConfiguration = false)
+    @ServerConfig(configuration = "empty.xml")
     public void emptyConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),

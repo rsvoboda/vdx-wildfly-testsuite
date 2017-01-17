@@ -38,9 +38,12 @@ public abstract class ServerBase implements Server {
     protected Path testArchiveDirectory = null;
     private ConfigurationFileBackup configurationFileBackup = new ConfigurationFileBackup();
     private static Server server = null;
+    private OfflineManagementClient managementClient;
 
     @Override
     public void tryStartAndWaitForFail(OfflineCommand... offlineCommands) throws Exception {
+
+        boolean modifyConfiguration = (offlineCommands != null) || (! getServerConfig().xmlTransformationGroovy().equals(""));
 
         // stop server if running
         stop();
@@ -51,17 +54,20 @@ public abstract class ServerBase implements Server {
         // if configuration file is not in configuration directory then copy from resources directory (never override)
         copyConfigFilesFromResourcesIfItDoesNotExist();
 
-        // backup config
-        boolean backupConfig = getServerConfig() == null ? true : getServerConfig().backupConfiguration();
-        if (backupConfig) {
-            backupConfiguration();
-        }
+        if (modifyConfiguration) {
+            managementClient = getOfflineManagementClient();
 
-        // apply transformation(s)
-        if (offlineCommands == null) {
-            applyXmlTransformation();
+            // backup config
+            backupConfiguration();
+
+            // apply transformation(s)
+            if (offlineCommands == null) {
+                applyXmlTransformation();
+            } else {
+                managementClient.apply(offlineCommands);
+            }
         } else {
-            getOfflineManagementClient().apply(offlineCommands);
+            managementClient = null;  // to see NPE when trying unexpected use-case
         }
 
         // archive configuration used during server start
@@ -79,7 +85,7 @@ public abstract class ServerBase implements Server {
         } finally {
 
             // restore original config if it exists
-            if (backupConfig) {
+            if (modifyConfiguration) {
                 restoreConfigIfBackupExists();
             }
         }
@@ -123,9 +129,9 @@ public abstract class ServerBase implements Server {
 
     private void backupConfiguration() throws Exception {
         // destroy any existing backup config
-        getOfflineManagementClient().apply(configurationFileBackup.destroy());
+        managementClient.apply(configurationFileBackup.destroy());
         // backup any existing config
-        getOfflineManagementClient().apply(configurationFileBackup.backup());
+        managementClient.apply(configurationFileBackup.backup());
     }
 
     private void restoreConfigIfBackupExists() throws Exception {
@@ -134,7 +140,7 @@ public abstract class ServerBase implements Server {
                     "startServer() call. Check tryStartAndWaitForFail() sequence that backupConfiguration() was called.");
         }
         System.out.println("Restoring server configuration. Configuration to be restored " + getServerConfig());
-        getOfflineManagementClient().apply(configurationFileBackup.restore());
+        managementClient.apply(configurationFileBackup.restore());
     }
 
     private void archiveModifiedUsedConfig() throws Exception {
@@ -151,36 +157,25 @@ public abstract class ServerBase implements Server {
     private void applyXmlTransformation() throws Exception {
         ServerConfig serverConfig = getServerConfig();
 
-        if (serverConfig.xmlTransformationGroovy().equals("")) {
-
-            // skip as no transformation is needed - e.g. using prepared configuration
-
-        } else {
-
-            if (serverConfig.subtreeName().equals("")) {  // standalone or domain case without subtree
-                getOfflineManagementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
-                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
-                                .build());
-                return;
-            }
-            if (serverConfig.profileName().equals("")) {  // standalone case with subtree
-                getOfflineManagementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
-                                .subtree(serverConfig.subtreeName(), Subtree.subsystem(serverConfig.subsystemName()))
-                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
-                                .build());
-
-            } else {  // domain case with subtree
-                getOfflineManagementClient()
-                        .apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
-                                .subtree(serverConfig.subtreeName(), Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
-                                .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
-                                .build());
-
-            }
+        if (serverConfig.subtreeName().equals("")) {  // standalone or domain case without subtree
+            managementClient.apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                            .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
+                            .build());
+            return;
         }
+        if (serverConfig.profileName().equals("")) {  // standalone case with subtree
+            managementClient.apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                            .subtree(serverConfig.subtreeName(), Subtree.subsystem(serverConfig.subsystemName()))
+                            .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
+                            .build());
 
+        } else {  // domain case with subtree
+            managementClient.apply(GroovyXmlTransform.of(DoNothing.class, serverConfig.xmlTransformationGroovy())
+                            .subtree(serverConfig.subtreeName(), Subtree.subsystemInProfile(serverConfig.profileName(), serverConfig.subsystemName()))
+                            .parameter(serverConfig.parameterName(), serverConfig.parameterValue())
+                            .build());
+
+        }
     }
 
     /**

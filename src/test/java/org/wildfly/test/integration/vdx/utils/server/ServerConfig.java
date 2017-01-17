@@ -83,9 +83,4 @@ import java.lang.annotation.Target;
      */
     String parameterValue() default "bar";
 
-    /**
-     * Option to skip backup & restore configuration steps for scenarios with very damaged configuration file - e.g. empty file.
-     * It's highly recommended to keep it on default value as much as possible.
-     */
-    boolean backupConfiguration() default true;
 }
