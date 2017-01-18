@@ -68,7 +68,7 @@ public class ServerStandalone extends ServerBase {
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (Files.notExists(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().configuration()))) {
+        if (Files.notExists(CONFIGURATION_PATH.resolve(getServerConfig().configuration()))) {
             FileUtils.copyFileFromResourcesToServer(RESOURCES_DIRECTORY + getServerConfig().configuration(),
                     CONFIGURATION_PATH, false);
         }

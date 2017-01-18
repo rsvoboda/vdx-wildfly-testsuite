@@ -144,8 +144,8 @@ public abstract class ServerBase implements Server {
     }
 
     private void archiveModifiedUsedConfig() throws Exception {
-        Files.copy(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().configuration()),
-                Paths.get(testArchiveDirectory.toString(), getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(CONFIGURATION_PATH.resolve(getServerConfig().configuration()),
+                testArchiveDirectory.resolve(getServerConfig().configuration()), StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
