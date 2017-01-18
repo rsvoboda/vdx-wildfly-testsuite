@@ -26,8 +26,8 @@ import java.util.Scanner;
 @Category(StandaloneTests.class)
 public class JBossWSStringReplaceTestCase extends TestBase {
 
-    private static final Path standaloneXml = Paths.get(Server.JBOSS_HOME, "standalone", "configuration", "standalone.xml");
-    private static final Path patchedStandaloneXml = Paths.get(Server.JBOSS_HOME, "standalone", "configuration", "standalone-ws-broken.xml");
+    private static final Path standaloneXml = Server.CONFIGURATION_PATH.resolve("standalone.xml");
+    private static final Path patchedStandaloneXml = Server.CONFIGURATION_PATH.resolve("standalone-ws-broken.xml");
 
     private static final String brokenWSSubsystemDefinition =
               "        <subsystem xmlns=\"urn:jboss:domain:webservices:2.0\">\n"

@@ -67,11 +67,11 @@ public class ServerDomain extends ServerBase {
 
     @Override
     protected void copyConfigFilesFromResourcesIfItDoesNotExist() throws Exception {
-        if (Files.notExists(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().configuration()))) {
+        if (Files.notExists(CONFIGURATION_PATH.resolve(getServerConfig().configuration()))) {
             FileUtils.copyFileFromResourcesToServer(RESOURCES_DIRECTORY + getServerConfig().configuration(),
                     CONFIGURATION_PATH, false);
         }
-        if (Files.notExists(Paths.get(CONFIGURATION_PATH.toString(), getServerConfig().hostConfig()))) {
+        if (Files.notExists(CONFIGURATION_PATH.resolve(getServerConfig().hostConfig()))) {
             FileUtils.copyFileFromResourcesToServer(RESOURCES_DIRECTORY + getServerConfig().hostConfig(),
                     CONFIGURATION_PATH, false);
         }
