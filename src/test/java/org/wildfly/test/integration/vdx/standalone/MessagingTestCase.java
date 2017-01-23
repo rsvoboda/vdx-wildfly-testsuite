@@ -180,4 +180,53 @@ public class MessagingTestCase extends TestBase {
         assertContains(errorLog, "^^^^ Wrong type for 'max-size-bytes'. Expected [LONG] but was STRING.");
         assertContains(errorLog, "Couldn't convert \\\"0.12345678\\\" to [LONG]");
     }
+
+    /*
+    * invalid order of elements - append security element to end of messaging-activemq subsystem
+    */
+    @Test
+    @ServerConfig(configuration = "standalone-full-ha.xml", xmlTransformationGroovy = "messaging/AddSecurityElementToEndOfSubsystem.groovy",
+            subtreeName = "messaging", subsystemName = "messaging-activemq")
+    public void testWrongOrderOfElements() throws Exception {
+        container().tryStartAndWaitForFail();
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
+        assertContains(errorLog, "<security enabled=\"false\"/>");
+        assertContains(errorLog, "^^^^ 'security' isn't an allowed element here");
+        assertContains(errorLog, "Elements allowed here are:");
+        assertContains(errorLog, "acceptor                   jms-topic");
+        assertContains(errorLog, "address-setting            journal-directory");
+        assertContains(errorLog, "bindings-directory         large-messages-directory");
+        assertContains(errorLog, "bridge                     legacy-connection-factory");
+        assertContains(errorLog, "broadcast-group            live-only");
+        assertContains(errorLog, "cluster-connection         paging-directory");
+        assertContains(errorLog, "connection-factory         pooled-connection-factory");
+        assertContains(errorLog, "connector                  queue");
+        assertContains(errorLog, "connector-service          remote-acceptor");
+        assertContains(errorLog, "discovery-group            remote-connector");
+        assertContains(errorLog, "divert                     replication-colocated");
+        assertContains(errorLog, "grouping-handler           replication-master");
+        assertContains(errorLog, "http-acceptor              replication-slave");
+        assertContains(errorLog, "http-connector             security-setting");
+        assertContains(errorLog, "in-vm-acceptor             shared-store-colocated");
+        assertContains(errorLog, "in-vm-connector            shared-store-master");
+        assertContains(errorLog, "jms-queue                  shared-store-slave");
+        assertContains(errorLog, "'security' is allowed in elements:");
+        assertContains(errorLog, "- server > profile > {urn:jboss:domain:messaging-activemq:1.1}subsystem > server");
+    }
+
+    /*
+    * missing required attribute in element - missing name in connector
+    * Reported Issue: https://issues.jboss.org/browse/JBEAP-8437
+    */
+    @Test
+    @ServerConfig(configuration = "standalone-full-ha.xml", xmlTransformationGroovy = "messaging/AddConnectorWithoutName.groovy",
+            subtreeName = "messaging", subsystemName = "messaging-activemq")
+    public void testFirstMissingRequiredAttributeInElement() throws Exception {
+        container().tryStartAndWaitForFail();
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
+        assertContains(errorLog, "^^^^ ParseError at [row,col]");
+        assertContains(errorLog, "Message: WFLYCTL0133: Missing required attribute(s): name");
+    }
 }
