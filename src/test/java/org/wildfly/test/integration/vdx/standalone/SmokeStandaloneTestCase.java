@@ -74,7 +74,10 @@ public class SmokeStandaloneTestCase extends TestBase {
     public static void ensureNonExistingElementToMessagingSubsystem(String errorMessages) {
         assertContains(errorMessages, "<cluster id=\"3\"/>");
         assertContains(errorMessages, "^^^^ 'id' isn't an allowed attribute for the 'cluster' element");
-        assertContains(errorMessages, "Attributes allowed here are: name, password, user");
+        assertContains(errorMessages, "Attributes allowed here are: ");
+        assertContains(errorMessages, "credential-reference");
+        assertContains(errorMessages, "name, password");
+        assertContains(errorMessages, "user");
         assertContains(errorMessages, "| 'id' is allowed on elements:");
         assertContains(errorMessages, "resource-adapters > resource-adapter");
         assertContains(errorMessages, "resource-adapters > resource-adapter > module");
