@@ -129,7 +129,7 @@ public class InvalidCharactersTestCase extends TestBase {
         container().tryStartAndWaitForFail();
         String errorLog = container().getErrorMessageFromServerStart();
         assertContains(errorLog, " ^^^^ Illegal processing instruction target (\"xml\"); xml (case insensitive)");
-        assertContains(errorLog, "| >    at [row,col {unknown-source}]: [1,6]");
+        assertContains(errorLog, "is reserved by the specs");
     }
 
     /*

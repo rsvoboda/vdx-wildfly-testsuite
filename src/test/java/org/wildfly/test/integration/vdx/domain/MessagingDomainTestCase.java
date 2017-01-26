@@ -31,6 +31,8 @@ import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 /**
+ * Tests for messaging subsystem in domain mode
+ *
  * Created by mnovak on 1/19/17.
  */
 
@@ -50,7 +52,7 @@ public class MessagingDomainTestCase extends TestBase {
         String errorLog = container().getErrorMessageFromServerStart();
         assertContains(errorLog, "Invalid value PAGES for address-full-policy; legal values are [BLOCK");
         assertContains(errorLog, "PAGE, FAIL, DROP]");
-        assertContains(errorLog, "Message: \"WFLYCTL0248: Invalid value PAGES for address-full-policy");
+        assertContains(errorLog, "\"WFLYCTL0248: Invalid value PAGES for address-full-policy");
     }
 
     /*
