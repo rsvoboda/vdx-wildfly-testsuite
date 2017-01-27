@@ -31,6 +31,8 @@ import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 /**
+ * Tests for messaging subsystem in standalone mode
+ *
  * Created by rsvoboda on 12/13/16.
  */
 
@@ -101,7 +103,7 @@ public class MessagingTestCase extends TestBase {
         String errorLog = container().getErrorMessageFromServerStart();
         assertContains(errorLog, "Invalid value PAGES for address-full-policy; legal values are [BLOCK");
         assertContains(errorLog, "PAGE, FAIL, DROP]");
-        assertContains(errorLog, "Message: \"WFLYCTL0248: Invalid value PAGES for address-full-policy");
+        assertContains(errorLog, "\"WFLYCTL0248: Invalid value PAGES for address-full-policy");
     }
 
     /*
@@ -226,7 +228,7 @@ public class MessagingTestCase extends TestBase {
         container().tryStartAndWaitForFail();
         String errorLog = container().getErrorMessageFromServerStart();
         assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
-        assertContains(errorLog, "^^^^ ParseError at [row,col]");
-        assertContains(errorLog, "Message: WFLYCTL0133: Missing required attribute(s): name");
+        assertContains(errorLog, "<http-connector socket-binding=\"http\" endpoint=\"http-acceptor\"/>");
+        assertContains(errorLog, "WFLYCTL0133: Missing required attribute(s): name");
     }
 }

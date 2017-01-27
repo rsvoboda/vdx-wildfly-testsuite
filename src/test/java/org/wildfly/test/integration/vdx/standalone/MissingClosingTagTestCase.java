@@ -23,12 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.wildfly.extras.creaper.commands.foundation.offline.xml.GroovyXmlTransform;
-import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
-import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
-import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.Server;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
@@ -38,10 +34,7 @@ import java.nio.file.Path;
 import java.util.Scanner;
 
 /**
- *
  * Tests for missing closing tag in configuration files
- *
- *
  *
  * Created by rsvoboda on 1/20/17.
  */
@@ -51,9 +44,9 @@ import java.util.Scanner;
 @Category(StandaloneTests.class)
 public class MissingClosingTagTestCase extends TestBase {
     private static final Path standaloneXml = Server.CONFIGURATION_PATH.resolve("standalone.xml");
-    public static final String STANDALONE_MISSING_CLOSING_TAG_XML = "standalone-missingClosingTag.xml";
-    public static final String STANDALONE_COMMENT_IS_NOT_CLOSED_XML = "standalone-commentIsNotClosed.xml";
-    public static final String STANDALONE_NOT_EXPECTED_CLOSING_TAG_XML = "standalone-notExpectedClosingTag.xml";
+    private static final String STANDALONE_MISSING_CLOSING_TAG_XML = "standalone-missingClosingTag.xml";
+    private static final String STANDALONE_COMMENT_IS_NOT_CLOSED_XML = "standalone-commentIsNotClosed.xml";
+    private static final String STANDALONE_NOT_EXPECTED_CLOSING_TAG_XML = "standalone-notExpectedClosingTag.xml";
     private static final Path missingClosingTagStandaloneXml = Server.CONFIGURATION_PATH.resolve(STANDALONE_MISSING_CLOSING_TAG_XML);
     private static final Path commentIsNotClosedStandaloneXml = Server.CONFIGURATION_PATH.resolve(STANDALONE_COMMENT_IS_NOT_CLOSED_XML);
     private static final Path notExpectedClosingTagStandaloneXml = Server.CONFIGURATION_PATH.resolve(STANDALONE_NOT_EXPECTED_CLOSING_TAG_XML);
@@ -136,7 +129,7 @@ public class MissingClosingTagTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "XMLStreamException: ParseError");
+        assertContains(errorLog, "XMLStreamException:");
         assertContains(errorLog, "WFLYCTL0198: Unexpected element '{urn:jboss:domain:weld:");
         assertContains(errorLog, "WFLYCTL0085: Failed to parse configuration");
     }
