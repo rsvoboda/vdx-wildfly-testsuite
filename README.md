@@ -61,4 +61,41 @@ Travis CI
 ---------
 
 There is Travis CI configured to test PRs. 
-  	    
+
+
+Technical Details 
+-----------------
+Tests for standalone and domain mode are differentiated by JUnit annotation `@Category(StandaloneTests.class)` or `@Category(DomainTests.class)`
+
+Modification of the configuration file is driven by ServerConfig annotation, underlying technology is based on xml transformations done via Creaper and Groovy.
+Custom configuration files or modification scripts can be specified by ServerConfig annotation, modification scripts can be parametrized.
+There is support to use directly offline Creaper commands if ServerConfig annotation does not provide means necessary for test scenario.
+Groovy transformations are taken from `src/test/resources/org/wildfly/test/integration/vdx/transformations`
+
+
+Test-suite takes care of creating backup of the configuration before changes are applied. Configuration is restored after every test to avoid interference with other tests.
+Logs from the server and modified server configurations are archived in `target/test-output/` directory, structure is multi-level based on TestCase and test names.
+
+Example of typical TestCase class definition for standalone mode:
+```java
+@RunAsClient
+@RunWith(Arquillian.class)
+@Category(StandaloneTests.class)
+public class YourNewTestCase extends TestBase {
+    ...
+}
+```
+
+Example of test definition for webservices:
+```java
+    @Test
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "webservices/AddIncorrectlyNamedModifyWsdlAddressElement.groovy",
+            subtreeName = "webservices", subsystemName = "webservices")
+    public void newTest() throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "OPVDX001: Validation error");
+        ...
+    }
+```
