@@ -50,7 +50,7 @@ public class MessagingDomainTestCase extends TestBase {
     public void testInvalidEnumValueInAddressSettingsFullPolicy() throws Exception {
         container().tryStartAndWaitForFail();
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "Invalid value PAGES for address-full-policy; legal values are [BLOCK");
+        assertContains(errorLog, "^^^^ Invalid value PAGES for address-full-policy; legal values are [BLOCK");
         assertContains(errorLog, "PAGE, FAIL, DROP]");
         assertContains(errorLog, "\"WFLYCTL0248: Invalid value PAGES for address-full-policy");
     }

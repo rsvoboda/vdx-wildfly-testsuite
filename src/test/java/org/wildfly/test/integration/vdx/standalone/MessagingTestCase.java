@@ -101,7 +101,7 @@ public class MessagingTestCase extends TestBase {
     public void testInvalidEnumValueInAddressSettingsFullPolicy() throws Exception {
         container().tryStartAndWaitForFail();
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "Invalid value PAGES for address-full-policy; legal values are [BLOCK");
+        assertContains(errorLog, "^^^^ Invalid value PAGES for address-full-policy; legal values are [BLOCK");
         assertContains(errorLog, "PAGE, FAIL, DROP]");
         assertContains(errorLog, "\"WFLYCTL0248: Invalid value PAGES for address-full-policy");
     }
@@ -229,6 +229,7 @@ public class MessagingTestCase extends TestBase {
         String errorLog = container().getErrorMessageFromServerStart();
         assertContains(errorLog, "OPVDX001: Validation error in standalone-full-ha.xml ---------------------------");
         assertContains(errorLog, "<http-connector socket-binding=\"http\" endpoint=\"http-acceptor\"/>");
+        assertContains(errorLog, "^^^^ Missing required attribute(s): name");
         assertContains(errorLog, "WFLYCTL0133: Missing required attribute(s): name");
     }
 }
