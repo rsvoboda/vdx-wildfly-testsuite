@@ -223,6 +223,8 @@
             <id>all</id>
             <properties>
                 <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+                <!-- this prevents to skip execution of "domain" tests if any of "standalone" tests fails -->
+                <maven.test.failure.ignore>true</maven.test.failure.ignore>
             </properties>
             <build>
                 <plugins>
