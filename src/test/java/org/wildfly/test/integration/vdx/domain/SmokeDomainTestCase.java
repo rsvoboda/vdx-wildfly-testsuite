@@ -65,7 +65,7 @@ public class SmokeDomainTestCase extends TestBase {
     public void emptyDCConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
-                "OPVDX002: Failed to pretty print validation error: Index: 0, Size: 0");
+                "OPVDX004: Failed to pretty print validation error: empty.xml has no content");
     }
 
     @Test
@@ -73,6 +73,6 @@ public class SmokeDomainTestCase extends TestBase {
     public void emptyHCConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
-                "OPVDX002: Failed to pretty print validation error: Index: 0, Size: 0");
+                "OPVDX004: Failed to pretty print validation error: empty.xml has no content");
     }
 }
