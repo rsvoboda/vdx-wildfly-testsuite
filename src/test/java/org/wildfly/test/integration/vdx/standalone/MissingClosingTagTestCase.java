@@ -143,7 +143,8 @@ public class MissingClosingTagTestCase extends TestBase {
         container().tryStartAndWaitForFail();
 
         String errorLog = container().getErrorMessageFromServerStart();
-        assertContains(errorLog, "com.ctc.wstx.exc.WstxEOFException: Unexpected end of input block in comment");
+        assertContains(errorLog, "OPVDX001: Validation error in " + STANDALONE_COMMENT_IS_NOT_CLOSED_XML);
+        assertContains(errorLog, "^^^^ Unexpected end of input block in comment");
         assertContains(errorLog, "WFLYCTL0085: Failed to parse configuration");
     }
 
