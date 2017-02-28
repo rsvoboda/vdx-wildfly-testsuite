@@ -64,6 +64,11 @@ public interface Server {
 
     Path getServerLogPath();
 
+   /**
+    * Reads file with ERROR log output from server start.
+    * @return all error logs output
+    * @throws Exception
+    */
     String getErrorMessageFromServerStart() throws Exception;
 
     void setTestArchiveDirectory(Path testArchiveDirectory);
