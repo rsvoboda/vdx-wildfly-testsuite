@@ -40,9 +40,8 @@ public class ElytronTestCase extends TestBase {
      * misplaced 'plain-text' attribute for properties-realm definition
      */
     @Test
-    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "elytron/MisplacedAttributeForPropertiesRealm.groovy")
-    // TODO use subtreeName after https://github.com/wildfly-extras/creaper/pull/152 is merged  and new Creaper released
-    //            ,subtreeName = "elytron", subsystemName = "elytron")
+    @ServerConfig(configuration = "standalone.xml", xmlTransformationGroovy = "elytron/MisplacedAttributeForPropertiesRealm.groovy",
+            subtreeName = "elytron", subsystemName = "elytron")
     public void misplacedAttributeForPropertiesRealm()throws Exception {
         container().tryStartAndWaitForFail();
 

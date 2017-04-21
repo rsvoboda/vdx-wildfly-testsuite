@@ -42,7 +42,7 @@
         <version.org.jboss.wildfly.dist>10.1.0.Final</version.org.jboss.wildfly.dist>
         <version.org.projectodd.vdx>1.1.1</version.org.projectodd.vdx>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
-        <version.org.wildfly.extras.creaper>1.2.0</version.org.wildfly.extras.creaper>
+        <version.org.wildfly.extras.creaper>1.6.0</version.org.wildfly.extras.creaper>
     </properties>
     <repositories>
         <repository>
