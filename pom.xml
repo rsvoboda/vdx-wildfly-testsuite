@@ -43,6 +43,8 @@
         <version.org.projectodd.vdx>1.1.1</version.org.projectodd.vdx>
         <version.org.wildfly.arquillian>1.0.2.Final</version.org.wildfly.arquillian>
         <version.org.wildfly.extras.creaper>1.6.0</version.org.wildfly.extras.creaper>
+
+        <version.org.jacoco.plugin>0.7.9</version.org.jacoco.plugin>
     </properties>
     <repositories>
         <repository>
@@ -185,6 +187,7 @@
                             </classpathDependencyExcludes>
                             <systemPropertyVariables>
                                 <jboss.home>${jboss.home}</jboss.home>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -216,6 +219,7 @@
                             </classpathDependencyExcludes>
                             <systemPropertyVariables>
                                 <jboss.home>${jboss.home}</jboss.home>
+                                <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <arquillian.xml>arquillian-domain.xml</arquillian.xml>
                             </systemPropertyVariables>
                         </configuration>
@@ -248,6 +252,7 @@
                                     </classpathDependencyExcludes>
                                     <systemPropertyVariables>
                                         <jboss.home>${jboss.home}</jboss.home>
+                                        <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                     </systemPropertyVariables>
                                 </configuration>
                             </execution>
@@ -264,6 +269,7 @@
                                     <systemPropertyVariables>
                                         <domain>true</domain>
                                         <jboss.home>${jboss.home}</jboss.home>
+                                        <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                         <arquillian.xml>arquillian-domain.xml</arquillian.xml>
                                     </systemPropertyVariables>
                                 </configuration>
@@ -273,5 +279,32 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>jacoco</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${version.org.jacoco.plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>jacoco-prepare-it</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>prepare-agent-integration</goal>
+                                </goals>
+                                <configuration>
+                                    <destFile>${project.build.directory}/jacoco.exec</destFile>
+                                    <propertyName>jacoco.agent</propertyName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 </project>
