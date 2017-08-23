@@ -99,3 +99,36 @@ Example of test definition for webservices:
         ...
     }
 ```
+
+Code coverage
+-----------------
+JaCoCo is used to generate code coverage data, `jacoco` profile was introduced to generate coverage data which are stored in `./target/jacoco.exec` file.
+
+```bash
+mvn clean test -Djboss.home=/path/to/location/of/the/server -Pjacoco,all
+```
+
+To view results you need to compile VDX sources and push data to SonarQube or generate the report using JaCoCo maven plugin
+```bash
+git clone git@github.com:projectodd/vdx.git
+cd vdx
+mvn package
+```
+
+JaCoCo report:
+```bash
+mvn org.jacoco:jacoco-maven-plugin:0.7.9:report -Djacoco.dataFile=/home/rsvoboda/git/vdx-wildfly-testsuite/target/jacoco.exec
+firefox core/target/site/jacoco/index.html &
+firefox wildfly/target/site/jacoco/index.html &
+```
+
+SonarQube:
+```bash
+wget https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.5.zip && unzip -q sonarqube-6.5.zip
+sonarqube-6.5/bin/linux-x86-64/sonar.sh start
+
+mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar -Dsonar.jacoco.reportPaths=/home/rsvoboda/git/vdx-wildfly-testsuite/target/jacoco.exec
+firefox http://localhost:9000/ &
+
+sonarqube-6.5/bin/linux-x86-64/sonar.sh stop
+```
