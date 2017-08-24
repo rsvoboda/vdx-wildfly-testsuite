@@ -54,6 +54,29 @@ public class HostXmlSmokeTestCase extends TestBase {
         assertContains(errorLog, "Elements allowed here are: formatters, handlers, logger, server-logger");
     }
 
+    @Test
+    @ServerConfig(configuration = "host.xml", xmlTransformationGroovy = "host/EmptyManagementInterfaces.groovy")
+    public void emptyManagementInterfaces() throws Exception {
+        container().tryStartAndWaitForFail();
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "^^^^ 'management-interfaces' is missing a required child element");
+        assertContains(errorLog, "One of the following is required: http-interface, native-interface");
+    }
+
+    @Test
+    @ServerConfig(configuration = "host.xml")
+    public void noManagementElement() throws Exception {
+        container().tryStartAndWaitForFail(
+                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class, "RemoveElement.groovy")
+                        .subtree("path", Subtree.management()).build()));
+
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "^^^^ 'domain-controller' is missing one or more required child elements");
+        assertContains(errorLog, "All of the following are required: management");
+        assertContains(errorLog, "WFLYCTL0134: Missing required element(s): MANAGEMENT");
+    }
+
     private String addElementAndStart(Subtree subtree, String elementXml) throws Exception {
         container().tryStartAndWaitForFail(
                 (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class, "AddElement.groovy")
