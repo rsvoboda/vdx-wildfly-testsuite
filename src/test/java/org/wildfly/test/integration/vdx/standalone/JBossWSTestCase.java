@@ -22,8 +22,12 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.wildfly.extras.creaper.commands.foundation.offline.xml.GroovyXmlTransform;
+import org.wildfly.extras.creaper.commands.foundation.offline.xml.Subtree;
+import org.wildfly.extras.creaper.core.offline.OfflineCommand;
 import org.wildfly.test.integration.vdx.TestBase;
 import org.wildfly.test.integration.vdx.category.StandaloneTests;
+import org.wildfly.test.integration.vdx.transformations.DoNothing;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 /**
@@ -120,6 +124,22 @@ public class JBossWSTestCase extends TestBase {
         assertContains(errorLog, "^^^^ 'client-config' isn't an allowed element here");
         assertContains(errorLog, "Elements allowed here are: endpoint-config, modify-wsdl-address,");
         assertContains(errorLog, "wsdl-host, wsdl-port, wsdl-secure-port");
+    }
+
+    /*
+     * duplicate wsdl-host element
+     */
+    @Test
+    @ServerConfig()
+    public void duplicateWsdlHostElement() throws Exception {
+        container().tryStartAndWaitForFail(
+                (OfflineCommand) ctx -> ctx.client.apply(GroovyXmlTransform.of(DoNothing.class, "AddElement.groovy")
+                        .subtree("path", Subtree.subsystem("webservices")).parameter("elementXml", "<wsdl-host>127.0.0.1</wsdl-host>")
+                        .build()));
+        String errorLog = container().getErrorMessageFromServerStart();
+        assertContains(errorLog, "OPVDX001: Validation error in standalone.xml");
+        assertContains(errorLog, "^^^^ 'wsdl-host' can't appear more than once within the subsystem element");
+        assertContains(errorLog, "A 'wsdl-host' element first appears here:");
     }
 
 }

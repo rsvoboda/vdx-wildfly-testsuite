@@ -201,10 +201,6 @@
             <activation>
                 <property><name>domain</name></property>
             </activation>
-            <properties>
-                <domain>true</domain>
-                <arquillian.xml>arquillian-domain.xml</arquillian.xml>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -218,6 +214,7 @@
                                 </classpathDependencyExclude>
                             </classpathDependencyExcludes>
                             <systemPropertyVariables>
+                                <domain>true</domain>
                                 <jboss.home>${jboss.home}</jboss.home>
                                 <jacoco.agent>${jacoco.agent}</jacoco.agent>
                                 <arquillian.xml>arquillian-domain.xml</arquillian.xml>
