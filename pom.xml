@@ -35,6 +35,7 @@
         <domain>false</domain> <!-- if tests for domain are executed, set this to true by -Ddomain=true -->
         <jboss.home>IF-NOT-DEFINED-WILDFLY-WILL-BE-DOWNLOADED-UNZIPPED-AND-USED-AUTOMATICALLY</jboss.home>
         <maven.test.redirectTestOutputToFile>false</maven.test.redirectTestOutputToFile>
+        <user.country.and.language>-Duser.country=EN -Duser.language=en</user.country.and.language>
 
         <version.junit>4.12</version.junit>
         <version.org.jboss.arquillian>1.1.11.Final</version.org.jboss.arquillian>
@@ -104,6 +105,20 @@
             <version>${version.org.jboss.wildfly.dist}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <user.country.and.language>${user.country.and.language}</user.country.and.language>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <!-- download wildfly 10.x if jboss.home system property is not defined and unzip it -->
