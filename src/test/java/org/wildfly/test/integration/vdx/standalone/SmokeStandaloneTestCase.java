@@ -27,6 +27,7 @@ import org.wildfly.test.integration.vdx.category.StandaloneTests;
 import org.wildfly.test.integration.vdx.utils.server.ServerConfig;
 
 import java.nio.file.Files;
+import java.util.ResourceBundle;
 
 /**
  * Smoke test case - it tests whether Wildlfy/EAP test automation is working and basic VDX functionality.
@@ -88,6 +89,6 @@ public class SmokeStandaloneTestCase extends TestBase {
     public void emptyConfigFile() throws Exception {
         container().tryStartAndWaitForFail();
         assertContains( String.join("\n", Files.readAllLines(container().getServerLogPath())),
-                "OPVDX004: Failed to pretty print validation error: empty.xml has no content");
+                ResourceBundle.getBundle("resources").getString("OPVDX004"));
     }
 }

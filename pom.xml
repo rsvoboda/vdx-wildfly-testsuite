@@ -112,6 +112,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>${user.country.and.language}</argLine>
                     <systemPropertyVariables>
                         <user.country.and.language>${user.country.and.language}</user.country.and.language>
                     </systemPropertyVariables>
