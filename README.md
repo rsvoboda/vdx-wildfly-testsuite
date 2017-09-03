@@ -41,6 +41,38 @@ To run test against application server running in domain mode:
 Of course you can specify concrere test not just whole TestCase class - for example `JBossWSTestCase#incorrectValueOfModifyWsdlAddressElement`
 
 
+Running internationalization and localization tests
+-------------------
+
+SmokeStandaloneTestCase#emptyConfigFile test is enhanced to support check based on selected language.
+Supported locales are:
+ * de_DE
+ * es_ES
+ * fr_FR
+ * ja_JP
+ * pt_BR
+ * zh_CN
+
+Iterating the test over all supported locales:
+```bash
+LANGUAGES=(
+'-Duser.country=DE -Duser.language=de'
+'-Duser.country=ES -Duser.language=es'
+'-Duser.country=JP -Duser.language=ja'
+'-Duser.country=FR -Duser.language=fr'
+'-Duser.country=CN -Duser.language=zh'
+'-Duser.country=BR -Duser.language=pt'
+)
+
+for index in ${!LANGUAGES[*]}; do
+    LANGUAGE=${LANGUAGES[$index]}
+    SUFFIX=`echo "$LANGUAGE" | sed "s/.*=\(..\).*=\(..\).*/\2_\1/g"`
+    echo "$LANGUAGE ... $SUFFIX"
+    mvn test -Duser.country.and.language="$LANGUAGE" -Dsurefire.reportNameSuffix="$SUFFIX" \
+      -Dtest=SmokeStandaloneTestCase#emptyConfigFile -Dversion.org.jboss.wildfly.dist=11.0.0.CR1
+done
+```
+
 Used technologies
 -----------------
 
