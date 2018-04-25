@@ -214,7 +214,7 @@ public class MessagingTestCase extends TestBase {
         assertContains(errorLog, "in-vm-connector            shared-store-master");
         assertContains(errorLog, "jms-queue                  shared-store-slave");
         assertContains(errorLog, "'security' is allowed in elements:");
-        assertContains(errorLog, "- server > profile > {urn:jboss:domain:messaging-activemq:3.0}subsystem > server");
+        assertContains(errorLog, "- server > profile > {urn:jboss:domain:messaging-activemq:3.1}subsystem > server");
     }
 
     /*
