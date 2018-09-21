@@ -52,6 +52,14 @@
             <name>JBoss Nexus Public Repository</name>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>bintray-epam-reportportal</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/epam/reportportal</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -65,6 +73,11 @@
             <artifactId>junit-vintage-engine</artifactId>
             <version>${version.junit.vintage}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>agent-java-junit</artifactId>
+            <version>2.7.2</version>
         </dependency>
         <!-- creaper dependencies - used for bad xml snippets injection to xml configuration of WF10 server -->
         <dependency>
@@ -108,6 +121,12 @@
                 <version>2.19.1</version>
                 <configuration>
                     <argLine>${user.country.and.language}</argLine>
+                    <properties>
+                        <property>
+                            <name>listener</name>
+                            <value>com.epam.reportportal.junit.ReportPortalListener</value>
+                        </property>
+                    </properties>
                     <systemPropertyVariables>
                         <user.country.and.language>${user.country.and.language}</user.country.and.language>
                     </systemPropertyVariables>
